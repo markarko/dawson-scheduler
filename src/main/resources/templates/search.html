@@ -32,13 +32,14 @@
     		font-size: 2rem;
     		line-height: 2rem;
     	}
-    	h4{
-    		text-align: center;
-    		color: red;
-    	}
+    	
     	h5{
     		padding: 0.5rem;
     		margin: 0;
+    	}
+    	#error{
+    		text-align: center;
+    		color: red;
     	}
     	.sections-parent{	
     		width: 80%;
@@ -48,12 +49,20 @@
     		padding: 2rem;
     		margin-bottom: 2rem;
     	}
+    	.sections-parent form{
+    		flex: 1;
+    		display: flex;
+    		justify-content: space-around;
+    		align-items: center
+    	}
+    	.sections-parent h4{
+    		flex: 4;
+    	}
     	#courses-parent{
     		display: flex;
     		flex-direction: column;
     		align-items: center;
     		justify-content: right;
-    		/*border: 2px solid black;*/
     	}
     	button{
     		display: inline-block;
@@ -68,17 +77,18 @@
 		<input placeholder="Enter a partial of full course number" type="text" name="courseNumber" required>
 		<button type="submit">Search</button>
 	</form>
-	<h4 th:text="${error}"></h4>
+	<h4 id="error" th:text="${error}"></h4>
 	<div id="courses-parent" th:each="course : ${courses}">
 		<h3 th:text="${course.getCourseNumber() + ' ' + course.getCourseTitle()}"></h3>
 		<div class="sections-parent">
+			<h4 th:text="${course.getCourseDescription()}"></h4>
 			<form th:action="@{/addCourse}" method="post">
 				<select name="sectionId">
 					<option th:each="section : ${course.getSections()}" th:text="'Section ' + ${section.getSection()}" th:value="${section.getSectionId()}"></option>
 				</select>
 				<input type="hidden" name="courseId" th:value="${course.getCourseId()}">
 				<button type="submit">Select</button>
-			</form>
+			</form>	
 		</div>
 	</div>
 </body>
