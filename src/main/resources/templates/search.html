@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Search</title>
+    <link rel="shortcut icon" href="#">
+    <style>
+    	body{
+    		margin: 0;
+    	}
+    	#search{
+    		margin: auto;
+    		margin-top: 2rem;
+    		margin-bottom: 2rem;
+    		width: 100%;
+    		display: flex;
+    		justify-content: center;
+    	}
+    	#search input{
+    		width: 13.5rem;
+    		height: 1.75rem;
+  			border: 2px solid black;
+  			background: none;
+    	}
+    	#search button{
+    		height: 2rem;
+    		margin-left: 1rem;
+    	}
+    	h4{
+    		padding: 0.5rem;
+    		margin: 0;
+    		font-size: 2rem;
+    		line-height: 2rem;
+    	}
+    	h6{
+    		padding: 0.5rem;
+    		margin: 0;
+    		font-size: 1.5rem;
+    		line-height: 1.5rem;
+    	}
+    	.sections-parent{	
+    		width: 80%;
+    		display: flex;
+    		justify-content: right;
+    		border: 2px solid black;
+    		padding: 2rem;
+    		margin-bottom: 2rem;
+    	}
+    	#courses-parent{
+    		display: flex;
+    		flex-direction: column;
+    		align-items: center;
+    		justify-content: right;
+    		/*border: 2px solid black;*/
+    	}
+    	button{
+    		display: inline-block;
+    	}
+    	form{
+    		width: 100%;
+    	}
+    </style>
+</head>
+<body>
+	<form id="search" th:action="@{/search}">
+		<input placeholder="Enter a partial of full course number" type="text" name="courseNumber" required>
+		<button type="submit">Search</button>
+	</form>
+	<div id="courses-parent" th:each="course : ${courses}">
+		<h3 th:text="${course.getCourseNumber() + ' ' + course.getCourseTitle()}"></h3>
+		<div class="sections-parent" th:each="section : ${course.getSections()}">
+			<form th:action="@{/addCourse}" method="post">
+				<h3 th:text="'Section: ' + ${section.section}" ></h3>
+				<h5 th:text="'Description: ' + ${section.weeklyClass.classDescription}"></h5>
+				<input type="hidden" name="sectionId" th:value="${section.getSectionId()}">
+				<input type="hidden" name="courseId" th:value="${course.getCourseId()}">
+				<button type="submit">Select</button>
+			</form>
+		</div>
+	</div>
+</body>
+</html>

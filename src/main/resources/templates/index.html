@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Scheduler</title>
+    <script defer type="text/javascript" th:src="@{/js/generateHtml.js}"></script>
+    <link rel="shortcut icon" href="#">
+    <style>
+    	#grid{
+    		height: 100%;
+    		display: flex;
+    		flex-direction: column;
+    		justify-content: center;
+    		align-items: center;
+    	}
+    	#actions{
+    		display: flex;
+    		justify-content: center;
+    	}
+    	#schedule{
+    		width: 50rem;
+    		height: 46.5rem;
+    		position: absolute;
+    		display: grid;
+    		grid-template-columns: repeat(8, 1fr);
+			grid-template-rows: repeat(31, 1fr);
+    	}
+    	#course-list{
+    		display: flex;
+    		justify-content: center;
+    		align-items: center;
+    	}
+    	button, a, a:visited{
+    		padding: 0.5rem;
+    		border: 2px solid black;
+    		text-decoration: none;
+    		color: black;
+    		cursor: pointer;
+    		background-color: white;
+    		margin: 1rem;
+    		width: 10rem;
+    		font-weight: bold;
+    		text-align: center;
+    	}
+    	#remove-course{
+    		display: flex;
+			border: 2px solid black;
+			padding: 0.25rem;
+			border-radius: 1rem;
+			margin-bottom: 1rem;
+    	}
+    	#remove-course button{
+			border: medium none;
+			background: none;
+			padding: 0px;
+			color: red;
+			margin: 0px;
+			height: 2rem;
+			width: 2rem;
+			font-size: 1rem;
+			font-weight: bold;
+    	}
+    	#remove-course h6{
+    		padding: 0px;
+			margin: 0px 0px 0px 0.25rem;
+			line-height: 2rem;
+			font-size: 1rem;	
+    	}
+    	body{
+    		margin: 0;
+    		
+    	}
+    	td, th{
+    		border: 2px solid black;
+    		width: 6rem;
+    		height: 1.25rem;
+    		text-align: center;
+    	}
+    	table{
+    		border-collapse: collapse;
+    	}
+    	
+    	form button{
+    		width: 7rem;
+    		border-radius: 1rem;
+    	}
+    </style>
+</head>
+<body>
+	<div th:object="${courses}"></div>
+    <div th:object="${sections}"></div>
+	<div id="actions">
+    	<input type="hidden" id="courses" th:value="${courses}">
+    	<input type="hidden" id="sections" th:value="${sections}">
+		<button th:onclick="generateSchedule([[${courses}]], [[${sections}]])">generate schedule</button>
+		<a th:href="@{search}">add course</a>
+	</div>
+	<div id="course-list">
+		<form th:each="course : ${courses}" th:action="@{/removeCourse}">
+			<div id="remove-course">
+				<input type="hidden" name="courseId" th:value="${course.getCourseId()}">
+				<h6 th:text="${course.courseNumber}"></h6>
+				<button type="submit">X</button>
+			</div>
+		</form>
+	</div>
+	<div id="grid">
+		<table>
+	    	<thead>
+	    		<tr>
+	    			<th></th>
+	    			<th>Sunday</th>
+	    			<th>Monday</th>
+	    			<th>Tuesday</th>
+	    			<th>Wednesday</th>
+	    			<th>Thursday</th>
+	    			<th>Friday</th>
+	    			<th>Saturday</th>
+	    		</tr>
+	    	</thead>
+	    	<tbody>
+	    		<tr th:each="time : ${times}">
+	    			<td th:text="${time.startTime} + '-' + ${time.endTime}"></td>	
+	    			<td></td>
+	    			<td></td>	
+	    			<td></td>	
+	    			<td></td>	
+	    			<td></td>	
+	    			<td></td>	
+	    			<td></td>		
+	    		</tr>
+	    	</tbody>
+	    </table> 
+	    <div id="schedule"></div>
+    </div>   
+    
+    <!--<a th:href="@{addCourses}">save courses</a>-->
+</body>
+</html>
+
+
+
+
