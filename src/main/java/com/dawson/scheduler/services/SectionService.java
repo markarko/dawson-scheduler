@@ -28,9 +28,18 @@ public class SectionService {
 	public Section findBySectionId(int sectionId) {
 		return sectionRepository.findBySectionId(sectionId);
 	}
-	/*public int getIntValueOfDayOfWeek(String dayOfWeek) {
-		
-	}*/
+	public int getIntValueOfWeekDay(String dayOfWeek) {
+		switch(dayOfWeek.toLowerCase()) {
+			case "sunday": return 1;
+			case "monday": return 2;
+			case "tuesday": return 3;
+			case "wednesday": return 4;
+			case "thursday": return 5;
+			case "friday": return 6;
+			case "saturday": return 7;
+			default: throw new IllegalArgumentException("The entered string is not a week day or is mistyped");
+		}
+	}
 	public boolean canAddSection(Section scheduleToAdd, List<Section> selectedSchedules, Course course, List<Course> selectedCourses) {
 		if (course != null && selectedCourses != null) {
 			for (Course c : selectedCourses) {
