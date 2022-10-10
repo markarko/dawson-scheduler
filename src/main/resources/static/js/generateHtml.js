@@ -28,14 +28,16 @@ function generateSchedule(courses, sections){
 				parent.style.gridRowEnd = gridRowEnd;
 				parent.style.border = "1px solid black";
 				parent.style.textAlign = "center";
+				parent.style.display = "flex";
+				parent.style.alignItems = "center";
+				parent.style.justifyContent = "center";
 				
 				weeklyClass.style.color = "white";
-				weeklyClass.style.padding = "0.25rem";
 				weeklyClass.style.margin = "0";
-				weeklyClass.style.height = "100%";
 				weeklyClass.style.fontSize = "0.75rem";
 				weeklyClass.style.lineHeight = "0.75rem";
-				weeklyClass.textContent = course.courseTitle + "\n" + course.courseNumber + "\n" + section.section + "\n" + schedule.location;
+				let sectionText = section.section > 10 ? "s.0000" : "s.00000";
+				weeklyClass.innerHTML = course.courseTitle + "<br>" + course.courseNumber + "<br>" + sectionText + section.section + "<br>" + schedule.location;
 			}
 		}
 	} else {
