@@ -70,6 +70,13 @@
     	form{
     		width: 100%;
     	}
+    	a{
+    		width: 100%;
+    		text-align: center;
+    		margin-bottom: 1rem;
+    		display: inline-block;
+    	}
+    	
     </style>
 </head>
 <body>
@@ -78,6 +85,7 @@
 		<button type="submit">Search</button>
 	</form>
 	<h4 id="error" th:text="${error}"></h4>
+	<a th:href="@{/}">Back to schedule</a>
 	<div id="courses-parent" th:each="course : ${courses}">
 		<h3 th:text="${course.getCourseNumber() + ' ' + course.getCourseTitle()}"></h3>
 		<div class="sections-parent">

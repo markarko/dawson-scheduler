@@ -10,9 +10,17 @@ import com.dawson.scheduler.entities.Schedule;
 import com.dawson.scheduler.entities.Section;
 import com.dawson.scheduler.repositories.SectionRepository;
 
+import lombok.Getter;
+import lombok.Setter;
+
 @Service
+@Getter
+@Setter
 public class SectionService {
-	private String error;
+	private String errorMessage = "";
+	private String scheduleConflictError = "The schedules have conflicts";
+	private String courseSelectedError = "This course is already selected";
+	private String noCoursesFoundError = "No courses were found with the course number ";
 	
 	@Autowired
 	private SectionRepository sectionRepository;
@@ -24,12 +32,11 @@ public class SectionService {
 		
 	}*/
 	public boolean canAddSection(Section scheduleToAdd, List<Section> selectedSchedules, Course course, List<Course> selectedCourses) {
-		error = "";
 		if (course != null && selectedCourses != null) {
 			for (Course c : selectedCourses) {
 				if (c.getCourseId() == course.getCourseId()) {
-					error = "This course is already selected";
-					System.out.println("Course is already selected");
+					errorMessage = courseSelectedError;
+					System.out.println(courseSelectedError);
 					return false;
 				}
 			}
@@ -48,8 +55,8 @@ public class SectionService {
 			                         			&&	 toMinutes(""+sToAdd.getEndTime())   >= toMinutes(""+selectedSc.getEndTime());
 	 
 			                if (startTimeIssue || endTimeIssue || bothTimesIssue) {
-			                	error = "The schedules have conflicts";
-								System.out.println("The schedules have conflicts");
+			                	errorMessage = scheduleConflictError;
+								System.out.println(scheduleConflictError);
 								return false;
 							}               
 						}			
@@ -63,11 +70,5 @@ public class SectionService {
 	public int toMinutes(String time) {
 		String[] times = time.split(":");
 		return Integer.parseInt(times[0]) * 60 + Integer.parseInt(times[1]);
-	}
-	public String getError() {
-		return this.error;
-	}
-	public void setError(String error) {
-		this.error = error;
 	}
 }

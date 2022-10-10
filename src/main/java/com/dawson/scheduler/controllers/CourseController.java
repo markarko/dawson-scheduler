@@ -76,16 +76,22 @@ public class CourseController {
 	@GetMapping("/search")
 	public String searchCourse(@Param("courseNumber") String courseNumber, Model model) {
 		List<Course> coursesFound = null;
-		if (courseNumber != null) {
+		
+		if (courseNumber != null) {		
+			
 			coursesFound = courseService.findByCourseNumberContaining(courseNumber);
 			if (coursesFound.size() == 0) {
-				sectionService.setError("No courses were found with the course number " + "\"" + courseNumber + "\"");
-				model.addAttribute("error", sectionService.getError());
-			} 
+				String courseNumStr = "\"" + courseNumber + "\"";
+				sectionService.setErrorMessage(sectionService.getNoCoursesFoundError() + courseNumStr);
+				model.addAttribute("error", sectionService.getErrorMessage());
+			}
+			model.addAttribute("error", sectionService.getErrorMessage());
 			model.addAttribute("courses", coursesFound);
 		} else {
-			model.addAttribute("error", sectionService.getError());
+			
+			model.addAttribute("error", sectionService.getErrorMessage());
 		}
+		sectionService.setErrorMessage("");
 		return "search";
 	}
 	
@@ -107,7 +113,7 @@ public class CourseController {
 		return "redirect:/";
 	}
 	
-	@GetMapping("removeCourse")
+	@GetMapping("/removeCourse")
 	public String removeCourse(@Param("courseId") String courseId) {
 		if (courseId != null) {
 			for (int i = 0; i < this.courses.size(); i++) {
@@ -119,8 +125,7 @@ public class CourseController {
 		}
 		return "redirect:/";
 	}
-	
-	
+
 	//test data
 	@GetMapping("/addCourses")
 	public String saveAllCourse(Model model) {
