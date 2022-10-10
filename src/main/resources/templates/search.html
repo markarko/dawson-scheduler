@@ -26,17 +26,19 @@
     		height: 2rem;
     		margin-left: 1rem;
     	}
-    	h4{
+    	h3{
     		padding: 0.5rem;
     		margin: 0;
     		font-size: 2rem;
     		line-height: 2rem;
     	}
-    	h6{
+    	h4{
+    		text-align: center;
+    		color: red;
+    	}
+    	h5{
     		padding: 0.5rem;
     		margin: 0;
-    		font-size: 1.5rem;
-    		line-height: 1.5rem;
     	}
     	.sections-parent{	
     		width: 80%;
@@ -66,6 +68,7 @@
 		<input placeholder="Enter a partial of full course number" type="text" name="courseNumber" required>
 		<button type="submit">Search</button>
 	</form>
+	<h4 th:text="${error}"></h4>
 	<div id="courses-parent" th:each="course : ${courses}">
 		<h3 th:text="${course.getCourseNumber() + ' ' + course.getCourseTitle()}"></h3>
 		<div class="sections-parent" th:each="section : ${course.getSections()}">

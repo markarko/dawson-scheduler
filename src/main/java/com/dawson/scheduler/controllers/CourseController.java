@@ -80,24 +80,30 @@ public class CourseController {
 		List<Course> coursesFound = null;
 		if (courseNumber != null) {
 			coursesFound = courseService.findByCourseNumberContaining(courseNumber);
+			if (coursesFound.size() == 0) {
+				sectionService.setError("No courses were found with the course number " + "\"" + courseNumber + "\"");
+				model.addAttribute("error", sectionService.getError());
+			} 
 			model.addAttribute("courses", coursesFound);
-		} 
+		} else {
+			model.addAttribute("error", sectionService.getError());
+		}
 		return "search";
 	}
-	//temporary
+	
 	@PostMapping("/addCourse")
 	public String addCourse(@Param("courseId") String courseId, @Param("sectionId") String sectionId) {
 		if (sectionId != null && courseId != null) {
-			
 			Course course = courseService.findByCourseId(Integer.parseInt(courseId));
-			
 			Section section = this.sectionService.findBySectionId(Integer.parseInt(sectionId));
 			
-			if (this.sectionService.canAddSection(section, sections)) {
+			if (this.sectionService.canAddSection(section, sections, course, courses)) {
 				this.sections.add(section);
 				this.courses.add(course);
+			} else {
+				return "redirect:/search";
 			}
-		}
+		} 
 
 		System.out.println(courses);
 		return "redirect:/";

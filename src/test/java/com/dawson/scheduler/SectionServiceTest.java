@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import com.dawson.scheduler.entities.Course;
 import com.dawson.scheduler.entities.Schedule;
 import com.dawson.scheduler.entities.Section;
 import com.dawson.scheduler.entities.WeeklyClass;
@@ -216,20 +217,60 @@ public class SectionServiceTest {
 				.weeklyClass(wClass4)
 				.build();
 		
+		Course c1 = Course.builder()
+				.courseId(1)
+				.courseNumber("420-510-DW")
+				.courseTitle("Programming")
+				.sections(List.of(sec1))
+				.build();
+		Course c2 = Course.builder()
+				.courseId(2)
+				.courseNumber("420-511-DW")
+				.courseTitle("Mobile Development")
+				.sections(List.of(sec3))
+				.build();
+		
+		Course c3 = Course.builder()
+				.courseId(3)
+				.courseNumber("420-520-DW")
+				.courseTitle("Web Development")
+				.sections(List.of(sec3))
+				.build();
+		Course c4 = Course.builder()
+				.courseId(4)
+				.courseNumber("420-540-DW")
+				.courseTitle("Networking")
+				.sections(List.of(sec4))
+				.build();
+		
 		List<Section> existingSections = List.of(sec1, sec2, sec3);
 		Section sectionToAdd = sec4;
+		List<Course> existingCourses = List.of(c1, c2, c3);
+		Course courseToAdd = c4;
 		
-		assertFalse(sectionService.canAddSection(sectionToAdd, existingSections));
+		assertFalse(sectionService.canAddSection(sectionToAdd, existingSections, courseToAdd, existingCourses));
 		
 		existingSections = List.of(sec2, sec3);
 		sectionToAdd = sec1;
+		existingCourses = List.of(c2, c3);
+		courseToAdd = c1;
 		
-		assertFalse(sectionService.canAddSection(sectionToAdd, existingSections));
+		assertFalse(sectionService.canAddSection(sectionToAdd, existingSections, courseToAdd, existingCourses));
 		
 		existingSections = List.of(sec2, sec3);
 		sectionToAdd = sec4;
+		existingCourses = List.of(c2, c3);
+		courseToAdd = c4;
 		
-		assertTrue(sectionService.canAddSection(sectionToAdd, existingSections));
+		assertTrue(sectionService.canAddSection(sectionToAdd, existingSections, courseToAdd, existingCourses));
+		
+		existingSections = List.of(sec2, sec3);
+		sectionToAdd = sec4;
+		existingCourses = List.of(c2, c3, c4);
+		courseToAdd = c4;
+		
+		assertFalse(sectionService.canAddSection(sectionToAdd, existingSections, courseToAdd, existingCourses));
+		
 	}
 	
 	@Test
