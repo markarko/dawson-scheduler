@@ -71,11 +71,11 @@
 	<h4 th:text="${error}"></h4>
 	<div id="courses-parent" th:each="course : ${courses}">
 		<h3 th:text="${course.getCourseNumber() + ' ' + course.getCourseTitle()}"></h3>
-		<div class="sections-parent" th:each="section : ${course.getSections()}">
+		<div class="sections-parent">
 			<form th:action="@{/addCourse}" method="post">
-				<h3 th:text="'Section: ' + ${section.section}" ></h3>
-				<h5 th:text="'Description: ' + ${section.weeklyClass.classDescription}"></h5>
-				<input type="hidden" name="sectionId" th:value="${section.getSectionId()}">
+				<select name="sectionId">
+					<option th:each="section : ${course.getSections()}" th:text="'Section ' + ${section.getSection()}" th:value="${section.getSectionId()}"></option>
+				</select>
 				<input type="hidden" name="courseId" th:value="${course.getCourseId()}">
 				<button type="submit">Select</button>
 			</form>
