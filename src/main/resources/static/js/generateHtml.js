@@ -3,12 +3,10 @@ const collegeTimes = collegeStartTime.split(':');
 const collegeStartTimeInMinutes = (+collegeTimes[0] * 60 + +collegeTimes[1]);
 const colors = ["red", "green", "orange", "blue", "purple"];
 	
-
-
 function generateSchedule(courses, sections){
 	if (sections !== undefined && courses !== undefined){
 		for (i in sections){
-			let schedules = sections[i].weeklyClass.schedules;
+			let schedules = sections[i].schedules;
 			let course = courses[i];
 			let section = sections[i];
 			for (j in schedules){
@@ -28,13 +26,13 @@ function generateSchedule(courses, sections){
 				parent.style.gridColumnEnd = schedule.dayOfWeek + 2;
 				parent.style.gridRowStart = gridRowStart;
 				parent.style.gridRowEnd = gridRowEnd;
-				weeklyClass.style.color = "white";
-				//weeklyClass.style.padding = "0.25rem";
+				parent.style.border = "1px solid black";
 				parent.style.textAlign = "center";
-				//weeklyClass.style.borderRadius = "1rem";
+				
+				weeklyClass.style.color = "white";
+				weeklyClass.style.padding = "0.25rem";
 				weeklyClass.style.margin = "0";
 				weeklyClass.style.height = "100%";
-				parent.style.border = "1px solid black";
 				weeklyClass.style.fontSize = "0.75rem";
 				weeklyClass.style.lineHeight = "0.75rem";
 				weeklyClass.textContent = course.courseTitle + "\n" + course.courseNumber + "\n" + section.section + "\n" + schedule.location;

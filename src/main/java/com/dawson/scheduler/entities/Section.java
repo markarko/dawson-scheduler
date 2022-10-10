@@ -1,5 +1,8 @@
 package com.dawson.scheduler.entities;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -36,14 +39,20 @@ public class Section {
             strategy = GenerationType.SEQUENCE,
             generator = "section_sequence"
     )
+	
 	private int sectionId;
 	private int section;
+	private String teacher;
 	
-	@OneToOne(cascade = CascadeType.ALL)
-	@JoinColumn(name = "section_id")
-	private WeeklyClass weeklyClass;
+	@OneToMany(cascade = CascadeType.ALL)
+	@JoinColumn
+	private List<Schedule> schedules;
 	
 	public static Section copy(Section other) {
-		return new Section(other.getSectionId(), other.getSection(), WeeklyClass.copy(other.getWeeklyClass()));
+		List<Schedule> schedules = new ArrayList<>();
+		for (Schedule s : other.getSchedules()) {
+			schedules.add(Schedule.copy(s));
+		}
+		return new Section(other.getSectionId(), other.getSection(), other.getTeacher(), schedules);
 	}
 }

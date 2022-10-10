@@ -12,7 +12,6 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import com.dawson.scheduler.entities.Course;
 import com.dawson.scheduler.entities.Schedule;
 import com.dawson.scheduler.entities.Section;
-import com.dawson.scheduler.entities.WeeklyClass;
 import com.dawson.scheduler.repositories.CourseRepository;
 
 @DataJpaTest 
@@ -43,7 +42,7 @@ public class CourseRepositoryTest {
 		Time endTime9 = Time.valueOf("10:00:00");
 		Time startTime10 = Time.valueOf("10:00:00");
 		Time endTime10 = Time.valueOf("11:30:00");
-
+		
 		
 		Schedule s1 = Schedule.builder()
 				.dayOfWeek(2)
@@ -105,34 +104,24 @@ public class CourseRepositoryTest {
 				.startTime(startTime10)
 				.endTime(endTime10)
 				.location("2F.14")
-				.build();	
-		
-		
-		WeeklyClass wClass1 = WeeklyClass.builder()
-				.classTeacher("Sriswetha Rajagopal")
-				.classDescription("The course will focus on the use of algorithms and data structures to simulate real-life phenomena using an appropriate gaming framework. Projects are implemented using an object-oriented language.")
-				.schedules(List.of(s1, s2, s3, s4, s5))
 				.build();
-		WeeklyClass wClass2 = WeeklyClass.builder()
-				.classTeacher("Dirk Dubois")
-				.classDescription("The course will focus on the use of algorithms and data structures to simulate real-life phenomena using an appropriate gaming framework. Projects are implemented using an object-oriented language.")
-				.schedules(List.of(s6, s7, s8, s9, s10))
-				.build();
+		
 
-		
 		Section sec1 = Section.builder()
 				.section(1)
-				.weeklyClass(wClass1)
+				.teacher("Sriswetha Rajagopal")
+				.schedules(List.of(s1, s2, s3, s4, s5))
 				.build();
 		Section sec2 = Section.builder()
 				.section(2)
-				.weeklyClass(wClass2)
+				.teacher("Dirk Dubois")
+				.schedules(List.of(s6, s7, s8, s9, s10))
 				.build();
-
 				
 		return Course.builder()
 				.courseNumber("420-510-DW")
 				.courseTitle("Programming V")
+				.courseDescription("Some description")
 				.sections(List.of(sec1, sec2))
 				.build();
 		

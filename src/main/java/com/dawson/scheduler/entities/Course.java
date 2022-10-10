@@ -41,10 +41,15 @@ public class Course {
             generator = "course_sequence"
     )
 	private int courseId;
+	
 	@Column(name = "number")
 	private String courseNumber;
+	
 	@Column(name = "title")
 	private String courseTitle;	
+	
+	@Column(name = "description")
+	private String courseDescription;
 	
 	@OneToMany(cascade = CascadeType.ALL)
 	@JoinColumn(name = "course_id")
@@ -55,6 +60,6 @@ public class Course {
 		for (Section s : other.getSections()) {
 			sections.add(Section.copy(s));
 		}
-		return new Course(other.getCourseId(), other.getCourseNumber(), other.getCourseTitle(), sections);
+		return new Course(other.getCourseId(), other.getCourseNumber(), other.getCourseTitle(), other.getCourseDescription(), sections);
 	}
 }

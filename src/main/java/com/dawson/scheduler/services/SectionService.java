@@ -36,8 +36,8 @@ public class SectionService {
 		}	
 		if (scheduleToAdd != null && selectedSchedules != null) {
 			for (Section selectedSection : selectedSchedules) {
-				for (Schedule selectedSc : selectedSection.getWeeklyClass().getSchedules()) {
-					for (Schedule sToAdd : scheduleToAdd.getWeeklyClass().getSchedules()) {
+				for (Schedule selectedSc : selectedSection.getSchedules()) {
+					for (Schedule sToAdd : scheduleToAdd.getSchedules()) {
 						if (selectedSc.getDayOfWeek() == sToAdd.getDayOfWeek()) {
 	
 							boolean startTimeIssue = toMinutes(""+sToAdd.getStartTime()) >  toMinutes(""+selectedSc.getStartTime())

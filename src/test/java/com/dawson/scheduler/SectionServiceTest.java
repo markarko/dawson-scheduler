@@ -11,7 +11,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import com.dawson.scheduler.entities.Course;
 import com.dawson.scheduler.entities.Schedule;
 import com.dawson.scheduler.entities.Section;
-import com.dawson.scheduler.entities.WeeklyClass;
 import com.dawson.scheduler.services.SectionService;
 
 @SpringBootTest
@@ -60,7 +59,6 @@ public class SectionServiceTest {
 		Time endTime17 = Time.valueOf("10:00:00");
 		Time startTime18 = Time.valueOf("10:00:00");
 		Time endTime18 = Time.valueOf("11:30:00");
-		
 		
 		Schedule s1 = Schedule.builder()
 				.dayOfWeek(2)
@@ -173,73 +171,56 @@ public class SectionServiceTest {
 				.endTime(endTime18)
 				.location("2F.14")
 				.build();
-
 		
-		WeeklyClass wClass1 = WeeklyClass.builder()
-				.classTeacher("Sriswetha Rajagopal")
-				.classDescription("The course will focus on the use of algorithms and data structures to simulate real-life phenomena using an appropriate gaming framework. Projects are implemented using an object-oriented language.")
-				.schedules(List.of(s1, s2, s3, s4, s5))
-				.build();
-		WeeklyClass wClass2 = WeeklyClass.builder()
-				.classTeacher("Dirk Dubois")
-				.classDescription("The course will focus on the use of algorithms and data structures to simulate real-life phenomena using an appropriate gaming framework. Projects are implemented using an object-oriented language.")
-				.schedules(List.of(s6, s7, s8, s9, s10))
-				.build();
-		WeeklyClass wClass3 = WeeklyClass.builder()
-				.classTeacher("Jean-Claude Desrosiers")
-				.classDescription("The course will focus on the development of applications within the Android environment. Students will learn how to analyze, design, construct, and implement an effective mobile application using the Android mobile development environment.")
-				.schedules(List.of(s11, s12, s13, s14))
-				.build();
-		WeeklyClass wClass4 = WeeklyClass.builder()
-				.classTeacher("Jean-Claude Desrosiers")
-				.classDescription("The course will focus on the development of applications within the Android environment. Students will learn how to analyze, design, construct, and implement an effective mobile application using the Android mobile development environment.")
-				.schedules(List.of(s15, s16, s17, s18))
-				.build();
 
 		Section sec1 = Section.builder()
-				.sectionId(1)
 				.section(1)
-				.weeklyClass(wClass1)
+				.teacher("Sriswetha Rajagopal")
+				.schedules(List.of(s1, s2, s3, s4, s5))
 				.build();
 		Section sec2 = Section.builder()
-				.sectionId(2)
 				.section(2)
-				.weeklyClass(wClass2)
+				.teacher("Dirk Dubois")
+				.schedules(List.of(s6, s7, s8, s9, s10))
 				.build();
 		Section sec3 = Section.builder()
-				.sectionId(3)
 				.section(1)
-				.weeklyClass(wClass3)
+				.teacher("Jean-Claude Desrosiers")
+				.schedules(List.of(s11, s12, s13, s14))
 				.build();
 		Section sec4 = Section.builder()
-				.sectionId(4)
 				.section(2)
-				.weeklyClass(wClass4)
+				.teacher("Jean-Claude Desrosiers")
+				.schedules(List.of(s15, s16, s17, s18))
 				.build();
-		
+				
 		Course c1 = Course.builder()
 				.courseId(1)
 				.courseNumber("420-510-DW")
 				.courseTitle("Programming")
+				.courseDescription("The course will focus on the use of algorithms and data structures to simulate real-life phenomena using an appropriate gaming framework. Projects are implemented using an object-oriented language.")
 				.sections(List.of(sec1))
 				.build();
 		Course c2 = Course.builder()
 				.courseId(2)
 				.courseNumber("420-511-DW")
 				.courseTitle("Mobile Development")
-				.sections(List.of(sec3))
+				.courseDescription("The course will focus on the development of applications within the Android environment. Students will learn how to analyze, design, construct, and implement an effective mobile application using the Android mobile development environment.")
+				.sections(List.of(sec2))
 				.build();
 		
 		Course c3 = Course.builder()
 				.courseId(3)
 				.courseNumber("420-520-DW")
 				.courseTitle("Web Development")
+				.courseDescription("The course will examine Web performance from the end-user perspective. Students are introduced to factors that impact browser loading and rendering time, tools that help in measuring performance, and patterns and tips to improve performance.")
 				.sections(List.of(sec3))
 				.build();
 		Course c4 = Course.builder()
 				.courseId(4)
 				.courseNumber("420-540-DW")
 				.courseTitle("Networking")
+				.courseDescription("This course is designed to familiarize the student with modern data communications theory, concepts, and terminology, including the various communications media and protocols used to transmit and share information over various types of networks.")
 				.sections(List.of(sec4))
 				.build();
 		
