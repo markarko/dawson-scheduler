@@ -1,5 +1,6 @@
 package com.dawson.scheduler;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.sql.Time;
 import java.util.List;
@@ -224,33 +225,26 @@ public class SectionServiceTest {
 				.sections(List.of(sec4))
 				.build();
 		
-		List<Section> existingSections = List.of(sec1, sec2, sec3);
-		Section sectionToAdd = sec4;
+
 		List<Course> existingCourses = List.of(c1, c2, c3);
 		Course courseToAdd = c4;
 		
-		assertFalse(sectionService.canAddSection(sectionToAdd, existingSections, courseToAdd, existingCourses));
-		
-		existingSections = List.of(sec2, sec3);
-		sectionToAdd = sec1;
+		assertFalse(sectionService.canAddSection(courseToAdd, existingCourses));
+
 		existingCourses = List.of(c2, c3);
 		courseToAdd = c1;
 		
-		assertFalse(sectionService.canAddSection(sectionToAdd, existingSections, courseToAdd, existingCourses));
+		assertFalse(sectionService.canAddSection(courseToAdd, existingCourses));
 		
-		existingSections = List.of(sec2, sec3);
-		sectionToAdd = sec4;
 		existingCourses = List.of(c2, c3);
 		courseToAdd = c4;
 		
-		assertTrue(sectionService.canAddSection(sectionToAdd, existingSections, courseToAdd, existingCourses));
+		assertTrue(sectionService.canAddSection(courseToAdd, existingCourses));
 		
-		existingSections = List.of(sec2, sec3);
-		sectionToAdd = sec4;
 		existingCourses = List.of(c2, c3, c4);
 		courseToAdd = c4;
 		
-		assertFalse(sectionService.canAddSection(sectionToAdd, existingSections, courseToAdd, existingCourses));
+		assertFalse(sectionService.canAddSection(courseToAdd, existingCourses));
 		
 	}
 	

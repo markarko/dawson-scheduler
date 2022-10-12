@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Scheduler</title>
+    <script defer type="text/javascript" th:src="@{/js/generateHtml.js}"></script>
+    <link rel="shortcut icon" href="#">
+   	<link rel="stylesheet" th:href="@{/css/index.css}">
+</head>
+<body>
+	<div th:object="${courses}"></div>
+    <div th:object="${sections}"></div>
+	<div id="actions">
+    	<input type="hidden" id="courses" th:value="${courses}">
+    	<input type="hidden" id="sections" th:value="${sections}">
+		<button th:onclick="generateSchedule([[${courses}]], [[${sections}]])">generate schedule</button>
+		<a th:href="@{search}">add course</a>
+	</div>
+	<div id="course-list">
+		<form th:each="course : ${courses}" th:action="@{/removeCourse}">
+			<div id="remove-course">
+				<input type="hidden" name="courseId" th:value="${course.getCourseId()}">
+				<h6 th:text="${course.courseNumber}"></h6>
+				<button type="submit">X</button>
+			</div>
+		</form>
+	</div>
+	<div id="grid">
+		<table>
+	    	<thead>
+	    		<tr>
+	    			<th></th>
+	    			<th>Sunday</th>
+	    			<th>Monday</th>
+	    			<th>Tuesday</th>
+	    			<th>Wednesday</th>
+	    			<th>Thursday</th>
+	    			<th>Friday</th>
+	    			<th>Saturday</th>
+	    		</tr>
+	    	</thead>
+	    	<tbody>
+	    		<tr th:each="time : ${times}">
+	    			<td th:text="${time.startTime} + '-' + ${time.endTime}"></td>	
+	    			<td></td>
+	    			<td></td>	
+	    			<td></td>	
+	    			<td></td>	
+	    			<td></td>	
+	    			<td></td>	
+	    			<td></td>		
+	    		</tr>
+	    	</tbody>
+	    </table>
+	    <div id="schedule"></div>
+    </div>   
+    
+    <!--<a th:href="@{addCourses}">save courses</a>-->
+</body>
+</html>
+
+
+
+

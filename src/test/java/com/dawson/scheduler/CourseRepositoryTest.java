@@ -1,6 +1,6 @@
 package com.dawson.scheduler;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.sql.Time;
 import java.util.List;

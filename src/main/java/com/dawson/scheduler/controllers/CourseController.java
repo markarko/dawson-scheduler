@@ -59,8 +59,13 @@ public class CourseController {
 
 	@GetMapping("/")
 	public String schedule(Model model) {	
-		model.addAttribute("sections", sections);
 		model.addAttribute("courses", courses);
+		
+		this.sections.clear();
+		for (Course c : courses) {
+			sections.add(c.getSections().get(0));
+		}
+		model.addAttribute("sections", sections);
 
 		List<ScheduleTime> times = new ArrayList<>();
 		int startTime = 7;
@@ -101,15 +106,16 @@ public class CourseController {
 			Course course = courseService.findByCourseId(Integer.parseInt(courseId));
 			Section section = this.sectionService.findBySectionId(Integer.parseInt(sectionId));
 			
-			if (this.sectionService.canAddSection(section, sections, course, courses)) {
-				this.sections.add(section);
-				this.courses.add(course);
+			course.setSections(null);
+			course.setSections(List.of(section));
+			if (this.sectionService.canAddSection(course, courses)) {				
+				this.courses.add(course);	
 			} else {
 				return "redirect:/search";
 			}
 		} 
 
-		System.out.println(courses);
+		System.out.println("session: "+this.courses);
 		return "redirect:/";
 	}
 	
@@ -119,7 +125,6 @@ public class CourseController {
 			for (int i = 0; i < this.courses.size(); i++) {
 				if (this.courses.get(i).getCourseId() == Integer.parseInt(courseId)) {
 					this.courses.remove(i);
-					this.sections.remove(i);
 				}
 			}
 		}

@@ -1,5 +1,6 @@
 package com.dawson.scheduler.services;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,20 +41,23 @@ public class SectionService {
 			default: throw new IllegalArgumentException("The entered string is not a week day or is mistyped");
 		}
 	}
-	public boolean canAddSection(Section scheduleToAdd, List<Section> selectedSchedules, Course course, List<Course> selectedCourses) {
-		if (course != null && selectedCourses != null) {
+	public boolean canAddSection(Course courseToAdd, List<Course> selectedCourses) {
+		if (courseToAdd != null && selectedCourses != null) {
+			if (selectedCourses.size() == 0) { return true; }
 			for (Course c : selectedCourses) {
-				if (c.getCourseId() == course.getCourseId()) {
+				if (c.getCourseId() == courseToAdd.getCourseId()) {
 					errorMessage = courseSelectedError;
 					System.out.println(courseSelectedError);
 					return false;
 				}
 			}
-		}	
-		if (scheduleToAdd != null && selectedSchedules != null) {
-			for (Section selectedSection : selectedSchedules) {
+			List<Section> selectedSections = new ArrayList<>();
+			for (Course c : selectedCourses) {
+				selectedSections.add(c.getSections().get(0));
+			}
+			for (Section selectedSection : selectedSections) {
 				for (Schedule selectedSc : selectedSection.getSchedules()) {
-					for (Schedule sToAdd : scheduleToAdd.getSchedules()) {
+					for (Schedule sToAdd : courseToAdd.getSections().get(0).getSchedules()) {
 						if (selectedSc.getDayOfWeek() == sToAdd.getDayOfWeek()) {
 	
 							boolean startTimeIssue = toMinutes(""+sToAdd.getStartTime()) >  toMinutes(""+selectedSc.getStartTime())
@@ -68,11 +72,14 @@ public class SectionService {
 								System.out.println(scheduleConflictError);
 								return false;
 							}               
-						}			
+						}	
 					}
 				}
 			}
-		} else { return false; }
+		} else { 
+			System.out.println("One of the parameters is null");
+			return false; 
+		}
 		System.out.println("The course was added successfully");
 		return true;
 	}
