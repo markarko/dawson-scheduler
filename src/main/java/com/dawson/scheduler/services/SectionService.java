@@ -87,6 +87,16 @@ public class SectionService {
 		System.out.println("The course was added successfully");
 		return true;
 	}*/
+	
+	
+	/**
+	 * This method checks if a certain section can be added to the already selected sections by checking if their schedules have conflicts
+	 * @param sectionToAdd 		-The section that we want to add to the selected sections
+	 * @param selectedSections  -Sections that were previously selected
+	 * @param courseToAdd		-The course that we want to add to the selected courses
+	 * @param selectedCourses	-Courses that were previously selected
+	 * @return
+	 */
 	public boolean canAddSection(Section sectionToAdd, List<Section> selectedSections, Course courseToAdd, List<Course> selectedCourses) {
 		if (courseToAdd != null && selectedCourses != null && sectionToAdd != null && selectedSections != null) {	
 			if (selectedCourses.size() == 0) { return true; }
@@ -126,41 +136,52 @@ public class SectionService {
 		System.out.println("The course was added successfully");
 		return true;
 	}
+	
 	/**
 	 * This method generates all possible schedules based on a list of courses
 	 * @param numItemsInComb 			-The number of items inside each combination
 	 * @param startIndex 				-Index at which we loop through the 
-	 * @param comb 						-A single resulting combination of ${numItemsInComb} items. Starts off with an empty array
+	 * @param sectionComb 				-A single resulting combination of ${numItemsInComb} items. Starts off with an empty array
+	 * @param linkedCoursesComb 		-TO_IMPLEMENT
 	 * @param coursesToGetCombFrom  	-List of courses from which we will generate all possible combinations
-	 * @param allCombs 					-Contains all resulted combinations
 	 * @param coursesLinkedToSections	-List of courses that are associated to the list of sections ${sectionsToGetCombFrom}
 	 * 									 Example: the section at index 0 in ${sectionsToGetCombFrom} come from the course at index 0 in ${coursesLinkedToSections} 
+	 * @param allSectionCombs 					-Contains all resulted combinations
 	 */
 	public void generateAllSchedules(int 				 numItemsInComb, 
 									 int 				 startIndex, 
-									 List<Section>   	 comb, 
+									 List<Section>   	 sectionComb, 
+									 List<Course>		 courseComb,
 									 List<Section> 		 sectionsToGetCombFrom, 
-									 List<List<Section>> allCombs,
-									 List<Course> 		 coursesLinkedToSections) {
+									 List<Course> 		 coursesLinkedToSections,
+									 List<List<Section>> allSectionCombs,
+									 List<List<Course>>  allCoursesCombs ) {
 		
-        if (comb.size() == numItemsInComb){
-            List<Section> newComb = new ArrayList<>();
-            for (Section s : comb){
-                newComb.add(s);
+        if (sectionComb.size() == numItemsInComb){
+            List<Section> newSectionComb = new ArrayList<>();
+            List<Course> newCourseComb = new ArrayList<>();
+            for (Section s : sectionComb){
+            	newSectionComb.add(s);
             }
-            allCombs.add(newComb);
+            for (Course c : courseComb){
+            	newCourseComb.add(c);
+            }
+            allSectionCombs.add(newSectionComb);
+            allCoursesCombs.add(newCourseComb);
             return;
         }
         
         for (int i = startIndex; i < sectionsToGetCombFrom.size(); i++){
         	List<Course> coursesLinkedToSectionsInComb = new ArrayList<>();
-        	for (Section s : comb) {
+        	for (Section s : sectionComb) {
         		coursesLinkedToSectionsInComb.add(courseService.findBySectionId(s.getSectionId()));		
         	}
-            if (canAddSection(sectionsToGetCombFrom.get(i), comb, coursesLinkedToSections.get(i), coursesLinkedToSectionsInComb)){
-            	comb.add(sectionsToGetCombFrom.get(i));
-                generateAllSchedules(numItemsInComb, i + 1, comb, sectionsToGetCombFrom, allCombs, coursesLinkedToSections);
-                comb.remove(comb.size()-1);
+            if (canAddSection(sectionsToGetCombFrom.get(i), sectionComb, coursesLinkedToSections.get(i), coursesLinkedToSectionsInComb)){
+            	sectionComb.add(sectionsToGetCombFrom.get(i));
+            	courseComb.add(coursesLinkedToSections.get(i));
+                generateAllSchedules(numItemsInComb, i + 1, sectionComb, courseComb, sectionsToGetCombFrom, coursesLinkedToSections, allSectionCombs, allCoursesCombs);
+                courseComb.remove(courseComb.size()-1);
+                sectionComb.remove(sectionComb.size()-1);
             }
         }
     }

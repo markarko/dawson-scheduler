@@ -219,7 +219,7 @@ public class SectionServiceTest {
 				.courseNumber("420-510-DW")
 				.courseTitle("Programming")
 				.courseDescription("The course will focus on the use of algorithms and data structures to simulate real-life phenomena using an appropriate gaming framework. Projects are implemented using an object-oriented language.")
-				.sections(List.of(sec1))
+				.sections(List.of(sec1, sec5))
 				.build();
 		c2 = Course.builder()
 				.courseId(2)
@@ -241,7 +241,8 @@ public class SectionServiceTest {
 				.courseNumber("420-540-DW")
 				.courseTitle("Networking")
 				.courseDescription("This course is designed to familiarize the student with modern data communications theory, concepts, and terminology, including the various communications media and protocols used to transmit and share information over various types of networks.")
-				.sections(List.of(sec4, sec5))
+				//.sections(List.of(sec4, sec5))
+				.sections(List.of(sec4))
 				.build();
 	}
 	
@@ -302,7 +303,9 @@ public class SectionServiceTest {
 	
 	@Test
 	public void generateAllSchedulesTest() {
-		List<List<Section>> results = new ArrayList<>();
+		List<List<Section>> sectionCombs = new ArrayList<>();
+		List<List<Course>> courseCombs = new ArrayList<>();
+		
 		List<Course> selectedCourses = List.of(c1, c2, c3, c4);
 		List<Section> selectedSections = new ArrayList<>();
 		List<Course> selectedCoursesToSectionsMatch = new ArrayList<>();
@@ -316,16 +319,28 @@ public class SectionServiceTest {
 			
 		
 		int numCourses = 2; // should be the size of selectedCourses
-		sectionService.generateAllSchedules(numCourses, 0, new ArrayList<Section>(), selectedSections, results, selectedCoursesToSectionsMatch);
-		for (List<Section> secs : results) {
+		sectionService.generateAllSchedules(numCourses, 0, new ArrayList<Section>(), new ArrayList<Course>(), selectedSections, selectedCoursesToSectionsMatch, sectionCombs, courseCombs);
+		
+		//Show all sections combinations
+		for (List<Section> secs : sectionCombs) {
 			System.out.print("[");
 			for (Section sec : secs) {
 				System.out.print(sec.getSectionId() + ",");
 			}
 			System.out.println("]");
 		}
+		System.out.println("------------");
+		//Show courses associated to the section combinations above
+		for (List<Course> cs : courseCombs) {
+			System.out.print("[");
+			for (Course c : cs) {
+				System.out.print(c.getCourseId() + ",");
+			}
+			System.out.println("]");
+		}
 	}
 	
+
 	//@Test
 	public void toMinutesTest() {
 		String time1 = "3:15:00";
