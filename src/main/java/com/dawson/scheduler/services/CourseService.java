@@ -12,6 +12,7 @@ import com.dawson.scheduler.repositories.CourseRepository;
 public class CourseService {
 	@Autowired
 	CourseRepository courseRepository;
+	
 	public List<Course> findByCourseNumberContaining(String partialNumber){
 		return courseRepository.findByCourseNumberContaining(partialNumber);
 	}
@@ -23,5 +24,8 @@ public class CourseService {
 	}
 	public Course findByCourseId(int courseId) {
 		return courseRepository.findByCourseId(courseId);
+	}
+	public Course findBySectionId(int sectionId) {
+		return courseRepository.findBySectionId(sectionId);
 	}
 }

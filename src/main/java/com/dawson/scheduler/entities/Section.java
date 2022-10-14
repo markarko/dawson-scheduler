@@ -45,7 +45,7 @@ public class Section {
 	private String teacher;
 	
 	@OneToMany(cascade = CascadeType.ALL)
-	@JoinColumn
+	@JoinColumn(name = "seid")
 	private List<Schedule> schedules;
 	
 	public static Section copy(Section other) {

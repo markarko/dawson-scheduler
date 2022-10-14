@@ -61,10 +61,10 @@ public class CourseController {
 	public String schedule(Model model) {	
 		model.addAttribute("courses", courses);
 		
-		this.sections.clear();
+		/*this.sections.clear();
 		for (Course c : courses) {
 			sections.add(c.getSections().get(0));
-		}
+		}*/
 		model.addAttribute("sections", sections);
 
 		List<ScheduleTime> times = new ArrayList<>();
@@ -108,14 +108,15 @@ public class CourseController {
 			
 			course.setSections(null);
 			course.setSections(List.of(section));
-			if (this.sectionService.canAddSection(course, courses)) {				
+			if (this.sectionService.canAddSection(section, sections, course, courses)) {				
 				this.courses.add(course);	
+				this.sections.add(section);
 			} else {
 				return "redirect:/search";
 			}
 		} 
-
-		System.out.println("session: "+this.courses);
+		// Can't remove. Have to fix lazy proxy intialization fail
+		System.out.println("--- "+this.courses);
 		return "redirect:/";
 	}
 	
@@ -125,6 +126,7 @@ public class CourseController {
 			for (int i = 0; i < this.courses.size(); i++) {
 				if (this.courses.get(i).getCourseId() == Integer.parseInt(courseId)) {
 					this.courses.remove(i);
+					this.sections.remove(i);
 				}
 			}
 		}

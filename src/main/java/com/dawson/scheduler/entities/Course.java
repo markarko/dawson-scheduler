@@ -52,7 +52,7 @@ public class Course {
 	private String courseDescription;
 	
 	@OneToMany(cascade = CascadeType.ALL)
-	@JoinColumn(name = "course_id")
+	@JoinColumn(name = "coid")
 	private List<Section> sections;
 	
 	public static Course copy(Course other) {

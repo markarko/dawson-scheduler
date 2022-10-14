@@ -3,11 +3,14 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.sql.Time;
+import java.util.ArrayList;
 import java.util.List;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.event.annotation.BeforeTestClass;
 
 import com.dawson.scheduler.entities.Course;
 import com.dawson.scheduler.entities.Schedule;
@@ -19,8 +22,14 @@ public class SectionServiceTest {
 	@Autowired
 	private SectionService sectionService;
 	
-	@Test
-	public void canAddSectionTest() {
+	private Course c1;
+	private Course c2;
+	private Course c3;
+	private Course c4;
+	
+	
+	@BeforeEach
+	private void generateCourses() {
 		Time startTime1 = Time.valueOf("10:00:00");
 		Time endTime1 = Time.valueOf("11:30:00");
 		Time startTime2 = Time.valueOf("11:30:00");
@@ -175,34 +184,44 @@ public class SectionServiceTest {
 		
 
 		Section sec1 = Section.builder()
+				.sectionId(1)
 				.section(1)
 				.teacher("Sriswetha Rajagopal")
 				.schedules(List.of(s1, s2, s3, s4, s5))
 				.build();
 		Section sec2 = Section.builder()
+				.sectionId(2)
 				.section(2)
 				.teacher("Dirk Dubois")
 				.schedules(List.of(s6, s7, s8, s9, s10))
 				.build();
 		Section sec3 = Section.builder()
+				.sectionId(3)
 				.section(1)
 				.teacher("Jean-Claude Desrosiers")
 				.schedules(List.of(s11, s12, s13, s14))
 				.build();
 		Section sec4 = Section.builder()
+				.sectionId(4)
 				.section(2)
 				.teacher("Jean-Claude Desrosiers")
 				.schedules(List.of(s15, s16, s17, s18))
 				.build();
+		Section sec5 = Section.builder()
+				.sectionId(5)
+				.section(3)
+				.teacher("Joser Buscarlet")
+				.schedules(List.of(s15, s16, s17, s18))
+				.build();
 				
-		Course c1 = Course.builder()
+		c1 = Course.builder()
 				.courseId(1)
 				.courseNumber("420-510-DW")
 				.courseTitle("Programming")
 				.courseDescription("The course will focus on the use of algorithms and data structures to simulate real-life phenomena using an appropriate gaming framework. Projects are implemented using an object-oriented language.")
 				.sections(List.of(sec1))
 				.build();
-		Course c2 = Course.builder()
+		c2 = Course.builder()
 				.courseId(2)
 				.courseNumber("420-511-DW")
 				.courseTitle("Mobile Development")
@@ -210,45 +229,104 @@ public class SectionServiceTest {
 				.sections(List.of(sec2))
 				.build();
 		
-		Course c3 = Course.builder()
+		c3 = Course.builder()
 				.courseId(3)
 				.courseNumber("420-520-DW")
 				.courseTitle("Web Development")
 				.courseDescription("The course will examine Web performance from the end-user perspective. Students are introduced to factors that impact browser loading and rendering time, tools that help in measuring performance, and patterns and tips to improve performance.")
 				.sections(List.of(sec3))
 				.build();
-		Course c4 = Course.builder()
+		c4 = Course.builder()
 				.courseId(4)
 				.courseNumber("420-540-DW")
 				.courseTitle("Networking")
 				.courseDescription("This course is designed to familiarize the student with modern data communications theory, concepts, and terminology, including the various communications media and protocols used to transmit and share information over various types of networks.")
-				.sections(List.of(sec4))
+				.sections(List.of(sec4, sec5))
 				.build();
-		
-
+	}
+	
+	//@Test
+	public void canAddSectionTest() {
+	
 		List<Course> existingCourses = List.of(c1, c2, c3);
 		Course courseToAdd = c4;
+		Section sectionToAdd = courseToAdd.getSections().get(0);
 		
-		assertFalse(sectionService.canAddSection(courseToAdd, existingCourses));
+		List<Section> selectedSections = new ArrayList<>();
+		
+	
+		for (Course c : existingCourses) {
+			for (Section s : c.getSections()) {
+				selectedSections.add(s);
+			}
+		}
+		
+		assertFalse(sectionService.canAddSection(sectionToAdd, selectedSections, courseToAdd, existingCourses));
 
 		existingCourses = List.of(c2, c3);
 		courseToAdd = c1;
+		sectionToAdd = courseToAdd.getSections().get(0);
+		selectedSections.clear();
+		for (Course c : existingCourses) {
+			for (Section s : c.getSections()) {
+				selectedSections.add(s);
+			}
+		}
 		
-		assertFalse(sectionService.canAddSection(courseToAdd, existingCourses));
+		assertFalse(sectionService.canAddSection(sectionToAdd, selectedSections, courseToAdd, existingCourses));
 		
 		existingCourses = List.of(c2, c3);
 		courseToAdd = c4;
+		sectionToAdd = courseToAdd.getSections().get(0);
+		selectedSections.clear();
+		for (Course c : existingCourses) {
+			for (Section s : c.getSections()) {
+				selectedSections.add(s);
+			}
+		}
 		
-		assertTrue(sectionService.canAddSection(courseToAdd, existingCourses));
+		assertTrue(sectionService.canAddSection(sectionToAdd, selectedSections, courseToAdd, existingCourses));
 		
 		existingCourses = List.of(c2, c3, c4);
 		courseToAdd = c4;
+		sectionToAdd = courseToAdd.getSections().get(0);
+		selectedSections.clear();
+		for (Course c : existingCourses) {
+			for (Section s : c.getSections()) {
+				selectedSections.add(s);
+			}
+		}
 		
-		assertFalse(sectionService.canAddSection(courseToAdd, existingCourses));
-		
+		assertFalse(sectionService.canAddSection(sectionToAdd, selectedSections, courseToAdd, existingCourses));
 	}
 	
 	@Test
+	public void generateAllSchedulesTest() {
+		List<List<Section>> results = new ArrayList<>();
+		List<Course> selectedCourses = List.of(c1, c2, c3, c4);
+		List<Section> selectedSections = new ArrayList<>();
+		List<Course> selectedCoursesToSectionsMatch = new ArrayList<>();
+		
+		for (Course c : selectedCourses) {
+			for (Section s : c.getSections()) {
+				selectedSections.add(s);
+				selectedCoursesToSectionsMatch.add(c);
+			}
+		}
+			
+		
+		int numCourses = 2; // should be the size of selectedCourses
+		sectionService.generateAllSchedules(numCourses, 0, new ArrayList<Section>(), selectedSections, results, selectedCoursesToSectionsMatch);
+		for (List<Section> secs : results) {
+			System.out.print("[");
+			for (Section sec : secs) {
+				System.out.print(sec.getSectionId() + ",");
+			}
+			System.out.println("]");
+		}
+	}
+	
+	//@Test
 	public void toMinutesTest() {
 		String time1 = "3:15:00";
 		int min1 = sectionService.toMinutes(time1);

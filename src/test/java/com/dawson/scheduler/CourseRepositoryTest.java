@@ -1,5 +1,6 @@
 package com.dawson.scheduler;
 
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.sql.Time;
@@ -128,14 +129,25 @@ public class CourseRepositoryTest {
 	}
 	
 	@Test
-	public void saveCourseTest() {
-		Course c = courseRepository.save(createCourse());
-		assertTrue(c.getCourseId() > 0);		
+	public void findBySectionId() {
+		int sectionId = 6;
+		courseRepository.saveAndFlush(createCourse());
+		Course c = courseRepository.findBySectionId(sectionId);
+		assertNotNull(c);
+		assertTrue(c.getSections().get(1).getSectionId() == sectionId);
 	}
 	
 	@Test
+	public void saveCourseTest() {
+		Course c = courseRepository.saveAndFlush(createCourse());
+		assertTrue(c.getCourseId() > 0);		
+	}
+	
+	
+	
+	@Test
 	public void findByCourseNumberContainingTest(){
-		courseRepository.save(createCourse());
+		courseRepository.saveAndFlush(createCourse());
 		List<Course> c = courseRepository.findByCourseNumberContaining("420");	
 		assertTrue(c.get(0).getCourseId() > 0);
 		assertTrue(c.size() == 1);
@@ -143,7 +155,7 @@ public class CourseRepositoryTest {
 	
 	@Test
 	public void findByCourseIdTest(){
-		courseRepository.save(createCourse());
+		courseRepository.saveAndFlush(createCourse());
 		Course c = courseRepository.findByCourseId(1);	
 		assertTrue(c.getCourseId() == 1);
 	}
