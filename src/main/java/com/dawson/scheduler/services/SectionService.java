@@ -97,10 +97,12 @@ public class SectionService {
 	 * @param selectedCourses	-Courses that were previously selected
 	 * @return
 	 */
+	//fix error messages showing up when generating all schedules
+	//display error message only when searching
 	public boolean canAddSection(Section sectionToAdd, List<Section> selectedSections, Course courseToAdd, List<Course> selectedCourses) {
 		if (courseToAdd != null && selectedCourses != null && sectionToAdd != null && selectedSections != null) {	
 			if (selectedCourses.size() == 0) { return true; }
-			// Probably move this loop to a separate method in course service
+			// move this loop to a separate method in course service
 			for (Course c : selectedCourses) {
 				if (c.getCourseId() == courseToAdd.getCourseId()) {
 					errorMessage = courseSelectedError;
@@ -140,13 +142,14 @@ public class SectionService {
 	/**
 	 * This method generates all possible schedules based on a list of courses
 	 * @param numItemsInComb 			-The number of items inside each combination
-	 * @param startIndex 				-Index at which we loop through the 
-	 * @param sectionComb 				-A single resulting combination of ${numItemsInComb} items. Starts off with an empty array
-	 * @param linkedCoursesComb 		-TO_IMPLEMENT
-	 * @param coursesToGetCombFrom  	-List of courses from which we will generate all possible combinations
+	 * @param startIndex 				-Index at which we loop through the (starts at 0)
+	 * @param sectionComb 				-A single resulting combination of ${numItemsInComb} items as sections. Starts off with an empty array
+	 * @param courseComb 				-A single resulting combination of ${numItemsInComb} items as courses. Starts off with an empty array
+	 * @param sectionsToGetCombFrom  	-List of sections from which we will generate all possible combinations
 	 * @param coursesLinkedToSections	-List of courses that are associated to the list of sections ${sectionsToGetCombFrom}
 	 * 									 Example: the section at index 0 in ${sectionsToGetCombFrom} come from the course at index 0 in ${coursesLinkedToSections} 
-	 * @param allSectionCombs 					-Contains all resulted combinations
+	 * @param allSectionCombs 			-Contains all resulted combinations as sections
+	 * @param allCoursesCombs			-Contains all resulted combinations as courses
 	 */
 	public void generateAllSchedules(int 				 numItemsInComb, 
 									 int 				 startIndex, 
