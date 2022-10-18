@@ -54,14 +54,14 @@ button, a, a:visited{
 	font-weight: bold;
 	text-align: center;
 }
-#remove-course{
+.remove-course{
 	display: flex;
 	border: 2px solid black;
 	padding: 0.25rem;
 	border-radius: 1rem;
 	margin-bottom: 1rem;
 }
-#remove-course button{
+.remove-course button{
 	border: medium none;
 	background: none;
 	padding: 0px;
@@ -72,7 +72,7 @@ button, a, a:visited{
 	font-size: 1rem;
 	font-weight: bold;
 }
-#remove-course h6{
+.remove-course h6{
 	padding: 0px;
 	margin: 0px 0px 0px 0.25rem;
 	line-height: 2rem;

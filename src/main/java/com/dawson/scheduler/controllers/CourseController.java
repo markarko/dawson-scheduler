@@ -55,9 +55,9 @@ public class CourseController {
 	
 	public CourseController() {
 		//this.sections = new ArrayList<>();
-		this.selectedCourses = new ArrayList<>();
-		this.validCourses = new ArrayList<>();
-		this.validSections = new ArrayList<>();
+		this.selectedCourses = new ArrayList<Course>();
+		this.validCourses = new ArrayList<Course>();
+		this.validSections = new ArrayList<Section>();
 	}
 	
 
@@ -129,7 +129,10 @@ public class CourseController {
 		for (;time < endTime; time+=0.5f) {	
 			times.add(new ScheduleTime(ScheduleTime.NumberToStringTime(time), ScheduleTime.NumberToStringTime(time+0.5f)));
 		}
+		
 		model.addAttribute("times", times);
+		//System.out.println("bug--"+this.selectedCourses);
+		model.addAttribute("courses", this.selectedCourses);
 		
 		if (this.selectedCourses.size() > 0) {
 			int numItemsInComb = this.selectedCourses.size();
@@ -146,8 +149,8 @@ public class CourseController {
 			}
 			
 			sectionService.generateAllSchedules(numItemsInComb, startIndex, new ArrayList<Section>(), new ArrayList<Course>(), sectionsToGetCombsFrom, coursesLinkedToSectionCombs, allPossibleSchedulesAsSections, allPossibleSchedulesAsCourses);
-			model.addAttribute("courses", allPossibleSchedulesAsCourses);
-			model.addAttribute("sections", allPossibleSchedulesAsSections);
+			model.addAttribute("courseCombinations", allPossibleSchedulesAsCourses);
+			model.addAttribute("sectionCombinations", allPossibleSchedulesAsSections);
 		}
 		/*for (List<Section> secs : allPossibleSchedulesAsSections) {
 			System.out.print("[");
@@ -189,7 +192,7 @@ public class CourseController {
 				}
 			}
 		}
-		return "redirect:/";
+		return "redirect:/schedules";
 	}
 
 	//test data
