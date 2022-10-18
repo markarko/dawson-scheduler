@@ -16,17 +16,33 @@ function generateAllSchedules(courses, sections){
 			let scheduleGrid = scheduleGrids[i];
 			let scheduleInfos = document.querySelectorAll(".schedule-info");
 			let scheduleInfo = scheduleInfos[i];
+			
+			let form = document.createElement("form");
+			form.setAttribute("action", "/");
+			form.setAttribute("method", "post");
+			scheduleInfo.appendChild(form);
+			let nameAttr = "courseAndSectionIds";
+			
 			for (j in sections[i]){
-					
 				let course = courses[i][j];
 				let section = sections[i][j];
 				let schedules = section.schedules;
 				
+				let input = document.createElement("input");
+				input.setAttribute("type", "hidden");
+				input.setAttribute("name", nameAttr);
+				input.setAttribute("value", course.courseId);
+				form.appendChild(input);
+				input = document.createElement("input");
+				input.setAttribute("type", "hidden");
+				input.setAttribute("name", nameAttr);
+				input.setAttribute("value", section.sectionId);
+				form.appendChild(input);
+				
 				let courseInfo = document.createElement("p");
 				courseInfo.innerHTML = +j+1 + ": " + course.courseTitle + "<br>" + course.courseNumber + " sec:" + section.section;
 				scheduleInfo.appendChild(courseInfo);
-				
-				
+
 				
 				for (k in schedules){
 					let schedule = schedules[k];
@@ -57,6 +73,10 @@ function generateAllSchedules(courses, sections){
 					weeklyClass.textContent = +j+1;		
 				}
 			}
+			let submitButton = document.createElement("button");
+			submitButton.setAttribute("type", "submit");
+			submitButton.textContent = "select";
+			form.appendChild(submitButton);
 		}
 	} else {
 		console.log("Sections or courses are null");

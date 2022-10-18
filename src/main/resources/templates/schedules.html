@@ -28,35 +28,15 @@
 		</form>
 	</div>-->
 	<div id="grid-parent"></div>
-	<!--<div class="grid" th:each="course : ${courses}">
-		<table>
-	    	<thead>
-	    		<tr>
-	    			<th>S</th>
-	    			<th>M</th>
-	    			<th>T</th>
-	    			<th>W</th>
-	    			<th>T</th>
-	    			<th>F</th>
-	    			<th>S</th>
-	    		</tr>
-	    	</thead>
-	    	<tbody>
-	    		<tr th:each="time : ${times}">
-	    			<td></td>
-	    			<td></td>	
-	    			<td></td>	
-	    			<td></td>	
-	    			<td></td>	
-	    			<td></td>	
-	    			<td></td>		
-	    		</tr>
-	    	</tbody>
-	    </table> 
-	    <div id="schedule"></div>
-    </div>-->
-
-
+	
+	
+	<!--<form th:each="course : ${courses}" th:action="@{/removeCourse}">
+		<div id="remove-course">
+			<input type="hidden" name="courseId" th:value="${course.getCourseId()}">
+			<h6 th:text="${course.courseNumber}"></h6>
+			<button type="submit">X</button>
+		</div>
+	</form>-->
 </body>
 </html>
 
