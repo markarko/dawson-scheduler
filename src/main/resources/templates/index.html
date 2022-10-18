@@ -18,7 +18,7 @@
 	</div>
 	<div id="course-list">
 		<form th:each="course : ${courses}" th:action="@{/removeCourse}">
-			<div id="remove-course">
+			<div class="course-number">
 				<input type="hidden" name="courseId" th:value="${course.getCourseId()}">
 				<h6 th:text="${course.courseNumber}"></h6>
 				<button type="submit">X</button>
