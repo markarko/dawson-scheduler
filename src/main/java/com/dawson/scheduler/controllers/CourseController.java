@@ -47,11 +47,10 @@ public class CourseController {
 	@Autowired
 	private SectionService sectionService;
 	
-	//private List<Section> sections;
-	
 	private List<Course> selectedCourses;
 	private List<Course> validCourses;
 	private List<Section> validSections;
+	private String errorMessage;
 	
 	public CourseController() {
 		//this.sections = new ArrayList<>();
@@ -101,27 +100,22 @@ public class CourseController {
 	@GetMapping("/search")
 	public String searchCourse(@Param("courseNumber") String courseNumber, Model model) {
 		List<Course> coursesFound = null;
-		
 		if (courseNumber != null) {		
-			
 			coursesFound = courseService.findByCourseNumberContaining(courseNumber);
 			if (coursesFound.size() == 0) {
 				String courseNumStr = "\"" + courseNumber + "\"";
-				sectionService.setErrorMessage(sectionService.getNoCoursesFoundError() + courseNumStr);
-				model.addAttribute("error", sectionService.getErrorMessage());
-			}
-			model.addAttribute("error", sectionService.getErrorMessage());
+				model.addAttribute("error", "No courses were found for the keyword " + courseNumStr);
+			} 
 			model.addAttribute("courses", coursesFound);
 		} else {
-			
-			model.addAttribute("error", sectionService.getErrorMessage());
+			model.addAttribute("error", this.errorMessage);
 		}
-		sectionService.setErrorMessage("");
 		return "search";
 	}
 	
 	@GetMapping("/schedules")
 	public String showSchedules(Model model) {
+		this.errorMessage = "";
 		List<ScheduleTime> times = new ArrayList<>();
 		int startTime = 7;
 		int endTime = 22;
@@ -131,7 +125,6 @@ public class CourseController {
 		}
 		
 		model.addAttribute("times", times);
-		//System.out.println("bug--"+this.selectedCourses);
 		model.addAttribute("courses", this.selectedCourses);
 		
 		if (this.selectedCourses.size() > 0) {
@@ -147,7 +140,6 @@ public class CourseController {
 					coursesLinkedToSectionCombs.add(c);
 				}
 			}
-			
 			sectionService.generateAllSchedules(numItemsInComb, startIndex, new ArrayList<Section>(), new ArrayList<Course>(), sectionsToGetCombsFrom, coursesLinkedToSectionCombs, allPossibleSchedulesAsSections, allPossibleSchedulesAsCourses);
 			model.addAttribute("courseCombinations", allPossibleSchedulesAsCourses);
 			model.addAttribute("sectionCombinations", allPossibleSchedulesAsSections);
@@ -158,8 +150,7 @@ public class CourseController {
 				System.out.print(sec.getSectionId() + ",");
 			}
 			System.out.println("]");
-		}	*/
-		
+		}*/
 		return "schedules";
 	}
 	
@@ -174,8 +165,10 @@ public class CourseController {
 			}
 			if (courseService.canAddCourse(course, selectedCourses)) {
 				this.selectedCourses.add(course);	
+			} else {	
+				this.errorMessage = "The course \"" + course.getCourseNumber() + "\"	 is already selected";
+				return "redirect:/search";
 			}
-			//this.sections.add(section);
 		} 
 		// Can't remove. Have to fix lazy proxy intialization fail
 		System.out.println("--- " + this.selectedCourses);
@@ -188,7 +181,6 @@ public class CourseController {
 			for (int i = 0; i < this.selectedCourses.size(); i++) {
 				if (this.selectedCourses.get(i).getCourseId() == Integer.parseInt(courseId)) {
 					this.selectedCourses.remove(i);
-					//this.sections.remove(i);
 				}
 			}
 		}

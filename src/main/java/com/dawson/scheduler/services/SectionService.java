@@ -18,10 +18,6 @@ import lombok.Setter;
 @Getter
 @Setter
 public class SectionService {
-	private String errorMessage = "";
-	private String scheduleConflictError = "The schedules have conflicts";
-	private String courseSelectedError = "This course is already selected";
-	private String noCoursesFoundError = "No courses were found with the course number ";
 	
 	@Autowired
 	private SectionRepository sectionRepository;
@@ -71,7 +67,6 @@ public class SectionService {
 			                         			&&	 toMinutes(""+sToAdd.getEndTime())   >= toMinutes(""+selectedSc.getEndTime());
 	 
 			                if (startTimeIssue || endTimeIssue || bothTimesIssue) {
-			                	errorMessage = scheduleConflictError;
 								return false;
 							}               
 						}	
