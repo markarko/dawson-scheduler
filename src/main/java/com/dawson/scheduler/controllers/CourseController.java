@@ -47,26 +47,26 @@ public class CourseController {
 	@Autowired
 	private SectionService sectionService;
 	
-	private List<Section> sections;
+	//private List<Section> sections;
 	
-	private List<Course> courses;
+	private List<Course> selectedCourses;
+	private List<Course> validCourses;
+	private List<Section> validSections;
 	
 	public CourseController() {
-		this.sections = new ArrayList<>();
-		this.courses = new ArrayList<>();
+		//this.sections = new ArrayList<>();
+		this.selectedCourses = new ArrayList<>();
+		this.validCourses = new ArrayList<>();
+		this.validSections = new ArrayList<>();
 	}
 	
 
+	//transform this to post
 	@GetMapping("/")
-	public String schedule(Model model) {	
-		model.addAttribute("courses", courses);
+	public String scheduleGet(Model model) {	
 		
-		/*this.sections.clear();
-		for (Course c : courses) {
-			sections.add(c.getSections().get(0));
-		}*/
-		model.addAttribute("sections", sections);
-
+		model.addAttribute("courses", this.validCourses);
+		model.addAttribute("sections", this.validSections);
 		List<ScheduleTime> times = new ArrayList<>();
 		int startTime = 7;
 		int endTime = 22;
@@ -76,6 +76,26 @@ public class CourseController {
 		}
 		model.addAttribute("times", times);
 		return "index";
+	}
+	
+	@PostMapping("/")
+	public String schedulePost(@Param("courseAndSectionIds") String... courseAndSectionIds) {
+		if (courseAndSectionIds != null) {
+			this.validCourses.clear();
+			this.validSections.clear();
+			// Comes in pairs of course and section id ((course id, section id), (course id, section id)...)
+			for (int i = 0; i < courseAndSectionIds.length; i+=2) {
+				int cid = Integer.parseInt(courseAndSectionIds[i]);
+				Course c = courseService.findByCourseId(cid);
+				validCourses.add(c);
+				int sid = Integer.parseInt(courseAndSectionIds[i+1]);
+				Section s = sectionService.findBySectionId(sid);
+				validSections.add(s);
+			}
+			System.out.println(this.validCourses);
+			System.out.println(this.validSections);
+		}
+		return "redirect:/";
 	}
 	
 	@GetMapping("/search")
@@ -100,33 +120,72 @@ public class CourseController {
 		return "search";
 	}
 	
+	@GetMapping("/schedules")
+	public String showSchedules(Model model) {
+		List<ScheduleTime> times = new ArrayList<>();
+		int startTime = 7;
+		int endTime = 22;
+		double time = startTime;
+		for (;time < endTime; time+=0.5f) {	
+			times.add(new ScheduleTime(ScheduleTime.NumberToStringTime(time), ScheduleTime.NumberToStringTime(time+0.5f)));
+		}
+		model.addAttribute("times", times);
+		
+		if (this.selectedCourses.size() > 0) {
+			int numItemsInComb = this.selectedCourses.size();
+			int startIndex = 0;
+			List<Section> sectionsToGetCombsFrom = new ArrayList<>();
+			List<Course> coursesLinkedToSectionCombs = new ArrayList<>();
+			List<List<Section>> allPossibleSchedulesAsSections = new ArrayList<>();
+			List<List<Course>> allPossibleSchedulesAsCourses = new ArrayList<>();
+			for (Course c : this.selectedCourses) {
+				for (Section s : c.getSections()) {
+					sectionsToGetCombsFrom.add(s);
+					coursesLinkedToSectionCombs.add(c);
+				}
+			}
+			
+			sectionService.generateAllSchedules(numItemsInComb, startIndex, new ArrayList<Section>(), new ArrayList<Course>(), sectionsToGetCombsFrom, coursesLinkedToSectionCombs, allPossibleSchedulesAsSections, allPossibleSchedulesAsCourses);
+			model.addAttribute("courses", allPossibleSchedulesAsCourses);
+			model.addAttribute("sections", allPossibleSchedulesAsSections);
+		}
+		/*for (List<Section> secs : allPossibleSchedulesAsSections) {
+			System.out.print("[");
+			for (Section sec : secs) {
+				System.out.print(sec.getSectionId() + ",");
+			}
+			System.out.println("]");
+		}	*/
+		
+		return "schedules";
+	}
+	
 	@PostMapping("/addCourse")
 	public String addCourse(@Param("courseId") String courseId, @Param("sectionId") String sectionId) {
 		if (sectionId != null && courseId != null) {
 			Course course = courseService.findByCourseId(Integer.parseInt(courseId));
-			Section section = this.sectionService.findBySectionId(Integer.parseInt(sectionId));
-			
-			course.setSections(null);
-			course.setSections(List.of(section));
-			if (this.sectionService.canAddSection(section, sections, course, courses)) {				
-				this.courses.add(course);	
-				this.sections.add(section);
-			} else {
-				return "redirect:/search";
+			if (Integer.parseInt(sectionId) != 0) {
+				course.setSections(null);
+				Section section = this.sectionService.findBySectionId(Integer.parseInt(sectionId));
+				course.setSections(List.of(section));
 			}
+			if (courseService.canAddCourse(course, selectedCourses)) {
+				this.selectedCourses.add(course);	
+			}
+			//this.sections.add(section);
 		} 
 		// Can't remove. Have to fix lazy proxy intialization fail
-		System.out.println("--- "+this.courses);
-		return "redirect:/";
+		System.out.println("--- " + this.selectedCourses);
+		return "redirect:/schedules";
 	}
 	
 	@GetMapping("/removeCourse")
 	public String removeCourse(@Param("courseId") String courseId) {
 		if (courseId != null) {
-			for (int i = 0; i < this.courses.size(); i++) {
-				if (this.courses.get(i).getCourseId() == Integer.parseInt(courseId)) {
-					this.courses.remove(i);
-					this.sections.remove(i);
+			for (int i = 0; i < this.selectedCourses.size(); i++) {
+				if (this.selectedCourses.get(i).getCourseId() == Integer.parseInt(courseId)) {
+					this.selectedCourses.remove(i);
+					//this.sections.remove(i);
 				}
 			}
 		}

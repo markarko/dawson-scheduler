@@ -19,6 +19,7 @@
 			<h4 th:text="${course.getCourseDescription()}"></h4>
 			<form th:action="@{/addCourse}" method="post">
 				<select name="sectionId">
+					<option th:value="0">All</option>
 					<option th:each="section : ${course.getSections()}" th:text="'Section ' + ${section.getSection()}" th:value="${section.getSectionId()}"></option>
 				</select>
 				<input type="hidden" name="courseId" th:value="${course.getCourseId()}">
