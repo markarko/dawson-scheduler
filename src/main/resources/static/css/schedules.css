@@ -1,21 +1,39 @@
-#grid{
-	height: 100%;
+.grid{
+	height: 25rem;
+	width: 24rem;
 	display: flex;
-	flex-direction: column;
-	justify-content: center;
-	align-items: center;
+}
+.grid-container{
+	width: 12rem;
+	height: 19.5rem;
+}
+#grid-parent{
+	padding: 5rem;
+	display: flex;
+	flex-wrap: wrap;
 }
 #actions{
 	display: flex;
 	justify-content: center;
 }
-#schedule{
-	width: 50rem;
-	height: 46.5rem;
+.schedule{
+	width: 12rem;
+	height: 19.5rem;
 	position: absolute;
 	display: grid;
-	grid-template-columns: repeat(8, 1fr);
+	grid-template-columns: repeat(7, 1fr);
 	grid-template-rows: repeat(31, 1fr);
+}
+.schedule-info{
+	display: flex;
+	flex-direction: column;
+	justify-content: left;
+	box-sizing: border-box;
+	padding-left: 1rem;
+}
+p{
+	margin: 0;
+	margin-bottom: 0.5rem;
 }
 #course-list{
 	display: flex;
@@ -62,17 +80,20 @@ button, a, a:visited{
 }
 body{
 	margin: 0;
-	
 }
 td, th{
-	border: 2px solid black;
-	width: 6rem;
-	height: 1.25rem;
+	border: 1.5px solid black;
+	height: 0.4rem;
+	font-size: 0.4rem;
+	line-height: 0.4rem;
 	text-align: center;
+	font-weight: bold
 }
 table{
 	border-collapse: collapse;
-	table-layout: fixed
+	table-layout: fixed;
+	width: 12rem;
+	height: 19.5rem;
 }
 
 form button{

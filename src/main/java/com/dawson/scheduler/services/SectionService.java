@@ -44,51 +44,6 @@ public class SectionService {
 		}
 	}
 	
-	// works only when each course has only one section
-	/*public boolean canAddSection(Course courseToAdd, List<Course> selectedCourses) {
-		if (courseToAdd != null && selectedCourses != null) {
-			if (selectedCourses.size() == 0) { return true; }
-			for (Course c : selectedCourses) {
-				if (c.getCourseId() == courseToAdd.getCourseId()) {
-					errorMessage = courseSelectedError;
-					System.out.println(courseSelectedError);
-					return false;
-				}
-			}
-			List<Section> selectedSections = new ArrayList<>();
-			for (Course c : selectedCourses) {
-				selectedSections.add(c.getSections().get(0));
-			}
-			for (Section selectedSection : selectedSections) {
-				for (Schedule selectedSc : selectedSection.getSchedules()) {
-					for (Schedule sToAdd : courseToAdd.getSections().get(0).getSchedules()) {
-						if (selectedSc.getDayOfWeek() == sToAdd.getDayOfWeek()) {
-	
-							boolean startTimeIssue = toMinutes(""+sToAdd.getStartTime()) >  toMinutes(""+selectedSc.getStartTime())
-												&&   toMinutes(""+sToAdd.getStartTime()) <  toMinutes(""+selectedSc.getEndTime());
-							boolean endTimeIssue =   toMinutes(""+sToAdd.getEndTime())   >  toMinutes(""+selectedSc.getStartTime())
-												&&   toMinutes(""+sToAdd.getEndTime())   <  toMinutes(""+selectedSc.getEndTime());
-							boolean bothTimesIssue = toMinutes(""+sToAdd.getStartTime()) <= toMinutes(""+selectedSc.getStartTime())
-			                         			&&	 toMinutes(""+sToAdd.getEndTime())   >= toMinutes(""+selectedSc.getEndTime());
-	 
-			                if (startTimeIssue || endTimeIssue || bothTimesIssue) {
-			                	errorMessage = scheduleConflictError;
-								System.out.println(scheduleConflictError);
-								return false;
-							}               
-						}	
-					}
-				}
-			}
-		} else { 
-			System.out.println("One of the parameters is null");
-			return false; 
-		}
-		System.out.println("The course was added successfully");
-		return true;
-	}*/
-	
-	
 	/**
 	 * This method checks if a certain section can be added to the already selected sections by checking if their schedules have conflicts
 	 * @param sectionToAdd 		-The section that we want to add to the selected sections
@@ -97,17 +52,12 @@ public class SectionService {
 	 * @param selectedCourses	-Courses that were previously selected
 	 * @return
 	 */
+	//fix error messages showing up when generating all schedules
+	//display error message only when searching
 	public boolean canAddSection(Section sectionToAdd, List<Section> selectedSections, Course courseToAdd, List<Course> selectedCourses) {
 		if (courseToAdd != null && selectedCourses != null && sectionToAdd != null && selectedSections != null) {	
 			if (selectedCourses.size() == 0) { return true; }
-			// Probably move this loop to a separate method in course service
-			for (Course c : selectedCourses) {
-				if (c.getCourseId() == courseToAdd.getCourseId()) {
-					errorMessage = courseSelectedError;
-					System.out.println(courseSelectedError);
-					return false;
-				}
-			}
+			if (!courseService.canAddCourse(courseToAdd, selectedCourses)) { return false; }
 			for (Section selectedSection : selectedSections) {
 				for (Schedule selectedSc : selectedSection.getSchedules()) {
 					for (Schedule sToAdd : sectionToAdd.getSchedules()) {
@@ -122,7 +72,6 @@ public class SectionService {
 	 
 			                if (startTimeIssue || endTimeIssue || bothTimesIssue) {
 			                	errorMessage = scheduleConflictError;
-								System.out.println(scheduleConflictError);
 								return false;
 							}               
 						}	
@@ -133,20 +82,20 @@ public class SectionService {
 			System.out.println("One of the parameters is null");
 			return false; 
 		}
-		System.out.println("The course was added successfully");
 		return true;
 	}
 	
 	/**
 	 * This method generates all possible schedules based on a list of courses
 	 * @param numItemsInComb 			-The number of items inside each combination
-	 * @param startIndex 				-Index at which we loop through the 
-	 * @param sectionComb 				-A single resulting combination of ${numItemsInComb} items. Starts off with an empty array
-	 * @param linkedCoursesComb 		-TO_IMPLEMENT
-	 * @param coursesToGetCombFrom  	-List of courses from which we will generate all possible combinations
+	 * @param startIndex 				-Index at which we loop through the (starts at 0)
+	 * @param sectionComb 				-A single resulting combination of ${numItemsInComb} items as sections. Starts off with an empty array
+	 * @param courseComb 				-A single resulting combination of ${numItemsInComb} items as courses. Starts off with an empty array
+	 * @param sectionsToGetCombFrom  	-List of sections from which we will generate all possible combinations
 	 * @param coursesLinkedToSections	-List of courses that are associated to the list of sections ${sectionsToGetCombFrom}
 	 * 									 Example: the section at index 0 in ${sectionsToGetCombFrom} come from the course at index 0 in ${coursesLinkedToSections} 
-	 * @param allSectionCombs 					-Contains all resulted combinations
+	 * @param allSectionCombs 			-Contains all resulted combinations as sections
+	 * @param allCoursesCombs			-Contains all resulted combinations as courses
 	 */
 	public void generateAllSchedules(int 				 numItemsInComb, 
 									 int 				 startIndex, 

@@ -28,4 +28,14 @@ public class CourseService {
 	public Course findBySectionId(int sectionId) {
 		return courseRepository.findBySectionId(sectionId);
 	}
+	public boolean canAddCourse(Course courseToAdd, List<Course> selectedCourses) {
+		for (Course c : selectedCourses) {
+			if (c.getCourseId() == courseToAdd.getCourseId()) {
+				//errorMessage = courseSelectedError;
+				//System.out.println(courseSelectedError);
+				return false;
+			}
+		}
+		return true;
+	}
 }

@@ -2,8 +2,10 @@ const collegeStartTime = "7:00:00";
 const collegeTimes = collegeStartTime.split(':');
 const collegeStartTimeInMinutes = (+collegeTimes[0] * 60 + +collegeTimes[1]);
 const colors = ["red", "green", "orange", "blue", "purple"];
-	
+
+
 function generateSchedule(courses, sections){
+ 	let grids = document.querySelectorAll(".grid");
 	if (sections !== undefined && courses !== undefined){
 		for (i in sections){
 			let schedules = sections[i].schedules;
@@ -25,7 +27,7 @@ function generateSchedule(courses, sections){
 				parent.style.gridColumnStart = schedule.dayOfWeek + 1;
 				parent.style.gridColumnEnd = schedule.dayOfWeek + 2;
 				parent.style.gridRowStart = gridRowStart;
-				parent.style.gridRowEnd = gridRowEnd;
+				parent.style.gridRowEnd = gridRowEnd;   
 				parent.style.border = "1px solid black";
 				parent.style.textAlign = "center";
 				parent.style.display = "flex";
@@ -37,7 +39,7 @@ function generateSchedule(courses, sections){
 				weeklyClass.style.fontSize = "0.75rem";
 				weeklyClass.style.lineHeight = "0.75rem";
 				let sectionText = section.section > 10 ? "s.0000" : "s.00000";
-				weeklyClass.innerHTML = course.courseTitle + "<br>" + course.courseNumber + "<br>" + sectionText + section.section + "<br>" + schedule.location;
+				weeklyClass.innerHTML = course.courseTitle + "<br>" + course.courseNumber + "<br>" + sectionText + section.section + "<br>" + schedule.location;	
 			}
 		}
 	} else {
