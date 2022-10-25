@@ -11,6 +11,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
+import javax.persistence.FetchType;
 
 import org.springframework.lang.NonNull;
 
@@ -51,7 +52,7 @@ public class Course {
 	@Column(name = "description")
 	private String courseDescription;
 	
-	@OneToMany(cascade = CascadeType.ALL)
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
 	@JoinColumn(name = "coid")
 	private List<Section> sections;
 	

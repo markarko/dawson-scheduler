@@ -169,9 +169,7 @@ public class CourseController {
 				this.errorMessage = "The course \"" + course.getCourseNumber() + "\"	 is already selected";
 				return "redirect:/search";
 			}
-		} 
-		// Can't remove. Have to fix lazy proxy intialization fail
-		System.out.println("--- " + this.selectedCourses);
+		}
 		return "redirect:/schedules";
 	}
 	
