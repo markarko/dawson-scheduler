@@ -42,102 +42,12 @@ public class RequestParser
 	
 	@Autowired
 	CourseService courseService;
-    public static void main( String[] args )
-    {
-        /*Console console = System.console();
-        char[] passwordNotParsed = console.readPassword();
-        String password = new String(passwordNotParsed);
-        login(password);*/
-        //parseHtml();
-        //parseStartAndEndTimes("5:00 AM - 6:30 PM");
-    }
-    /*public static void login(String password) {
-        WebClient client = new WebClient();
-        //client.getOptions().setJavaScriptEnabled(true);
-        client.getOptions().setCssEnabled(false);
-        client.getOptions().setUseInsecureSSL(true);
-        client.getOptions().setDownloadImages(false);
-        client.getOptions().setPopupBlockerEnabled(true);
-        client.getOptions().setRedirectEnabled(true);
-        client.getOptions().setTimeout(30000);
-        client.getOptions().setThrowExceptionOnScriptError(false);
     
-        try {
-            String loginUrl = "https://dawsoncollege.omnivox.ca/intr/Module/Identification/Login/Login.aspx";
-            // Hiding warnings
-            java.util.logging.Logger.getLogger("com.gargoylesoftware.htmlunit").setLevel(Level.OFF);
-            java.util.logging.Logger.getLogger("org.apache.commons.httpclient").setLevel(Level.OFF);
-    
-            HtmlPage response = client.getPage(loginUrl);
-            HtmlForm form = response.getFormByName("formLogin");
-    
-            String k = form.getInputByName("k").getValueAttribute();
-    
-            URL url = new URL(loginUrl);
-            WebRequest loginRequest = new WebRequest(url, HttpMethod.POST);
-    
-            // Filling form requests
-            ArrayList<NameValuePair> requestParams = new ArrayList<NameValuePair>();
-            requestParams.add(new NameValuePair("NoDA", "2133905"));
-            requestParams.add(new NameValuePair("PasswordEtu", password));
-            requestParams.add(new NameValuePair("TypeIdentification", "Etudiant"));
-            requestParams.add(new NameValuePair("TypeLogin", "PostSolutionLogin"));
-            requestParams.add(new NameValuePair("k", k));
-            loginRequest.setRequestParameters(requestParams);
-    
-            client.getPage(loginRequest);
-            DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");  
-            LocalDateTime now = LocalDateTime.now();  
-            String x = dtf.format(now);  
-            String omnivoxTimetableRedirectUrl = "https://dawsoncollege.omnivox.ca/intr/Module/ServicesExterne/RedirectionServicesExternes.ashx?idService=1077&C=DAW&E=P&L=ANG&Ref="+x;
-            HtmlPage response1 = client.getPage(omnivoxTimetableRedirectUrl);
-            List<HtmlForm> form1 = response1.getForms();
-            HtmlForm form2 = form1.get(0);
-            String l = form2.getInputByName("timetable_search_nonce").getValueAttribute();
-
-            ArrayList<NameValuePair> newRequestParams = new ArrayList<NameValuePair>();
-            newRequestParams.add(new NameValuePair("action", "timetable_search"));
-            newRequestParams.add(new NameValuePair("nonce", l));
-            newRequestParams.add(new NameValuePair("specific_ed", ""));
-            newRequestParams.add(new NameValuePair("discipline", ""));
-            newRequestParams.add(new NameValuePair("general_ed", ""));
-            newRequestParams.add(new NameValuePair("special_ed", ""));
-            newRequestParams.add(new NameValuePair("course_title", "*"));
-            newRequestParams.add(new NameValuePair("section", ""));
-            newRequestParams.add(new NameValuePair("teacher", ""));
-            newRequestParams.add(new NameValuePair("intensive", ""));
-            newRequestParams.add(new NameValuePair("seats", ""));
-
-            String timetableUrl = "https://timetable.dawsoncollege.qc.ca/wp-content/plugins/timetable/search.php";
-            URL newUrl = new URL(timetableUrl);
-            WebRequest fetchData = new WebRequest(newUrl, HttpMethod.POST);
-            fetchData.setRequestParameters(newRequestParams);
-            HtmlPage response3 = client.getPage(fetchData);
-
-            WebResponse response2 = response3.getWebResponse();
-            String content = response2.getContentAsString();
-
-            PrintStream o = null;
-            try {
-                o = new PrintStream(new File("C:\\Users\\marko\\Desktop\\response.txt"));
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            }
-            System.setOut(o);
-            System.out.println(content); 
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            client.close();
-        }
-    }*/
     public void parseHtml(){
         File file = new File("C:\\Users\\marko\\Desktop\\EclipseWorkspace\\dawson-scheduler\\src\\main\\java\\com\\dawson\\scheduler\\parsers\\response.txt");
 		BufferedReader reader = null;
 		try {
-			courseService.deleteAll();
-			courseService.flush();
+			// Remove all courses when doing the request
 			
 			reader = new BufferedReader(new FileReader(file));
 			StringBuilder stringBuilder = new StringBuilder();
@@ -152,8 +62,6 @@ public class RequestParser
 			String html = stringBuilder.toString();
 			Document doc = Jsoup.parse(html);
             Elements courseWraps = doc.select("div.course-list-table div.course-wrap");
-            
-            //List<Course> courseEntities = new ArrayList<>();
             
             //Courses
             for (Element courseWrap : courseWraps){
@@ -173,11 +81,9 @@ public class RequestParser
                 
                 Elements rowsTests = sectionDetails.first().select("li.row");
                 if (rowsTests.get(rowsTests.size()-1).text().contains("Intensive")) {
-                	//System.out.println("intensive course");
                 	continue;
                 }
                 		
-                //System.out.println(courseTitle.text());
                 List<Section> sectionEntities = new ArrayList<Section>();
                 boolean canAddCourse = true;
                 for (Element sectionDetail : sectionDetails){
@@ -185,14 +91,11 @@ public class RequestParser
                     Element section = rows.get(0).select("div.col-md-10").first();
                     Element teacher = rows.get(1).select("div.col-md-10").first();
                     description = rows.get(2).select("div.col-md-10").first();
-                    //System.out.println(section.text());
-                    //System.out.println(teacher.text());
-                    //System.out.println(description.text());
                     Element scheduleWrapper = rows.get(4).select("div.col-md-10").first();
                     Elements schedules = scheduleWrapper.select("table tbody tr");
                     
+                    //Testing data anomalies for some courses
                     if (courseNumber.text().equals("603-102-MQ"))
-                    	//System.out.println(courseNumber.text());
                     	System.out.println(section.text());
                     		
                     List<Schedule> scheduleEntities = new ArrayList<>();
@@ -209,14 +112,8 @@ public class RequestParser
                         		.endTime(parsedTimes.get(1))
                         		.location(location.text())
                         		.build();
-                        //System.out.println(parsedTimes.get(0));
-                        //System.out.println(parsedTimes.get(1));
-                        //System.out.println(scheduleEntity);
+
                         scheduleEntities.add(scheduleEntity);
-                        
-                        //System.out.println(dayOfWeek.text());
-                        //System.out.println(times.text());
-                        //System.out.println(location.text());
                     }
                     try {
                     	if (scheduleEntities.size() != 0) {
@@ -225,10 +122,7 @@ public class RequestParser
 		                    		.section(Integer.parseInt(section.text()))
 		                    		.schedules(scheduleEntities)
 		                    		.teacher(teacher.text())
-		                    		.build();
-		                    
-		                    //System.out.println(scheduleEntities);
-		                    
+		                    		.build();      
 		                    sectionEntities.add(sectionEntity);
                     	}
                     } catch (NumberFormatException e) {
@@ -244,6 +138,7 @@ public class RequestParser
                 		.sections(sectionEntities)
                 		.build();
                 
+                //If anything goes wrong, don't add the course. Temporary solution
                 if (canAddCourse && sectionEntities.size() != 0)
                 	courseService.save(courseEntity);
             }
@@ -256,6 +151,7 @@ public class RequestParser
 		System.out.println("done");
     }
     
+    //Refactor the code...
     public static List<Time> parseStartAndEndTimes(String startAndEndTime){
         String[] startAndEndTimes = startAndEndTime.split("-");
         String startTimeStr = startAndEndTimes[0];
@@ -269,8 +165,6 @@ public class RequestParser
         if (endTimeAmPmSep[2].equals("PM") && !endTimeAmPmSep[1].split(":")[0].equals("12")){
             endTimeAmPmSep[1] = toHoursString(toMinutes(endTimeAmPmSep[1]) + 720);
         }
-        //System.out.println(startTimeAmPmSep[0]);
-        //System.out.println(endTimeAmPmSep[1]);
         Time startTime = Time.valueOf(startTimeAmPmSep[0]+":00");
         Time endTime = Time.valueOf(endTimeAmPmSep[1]+":00");
         List<Time> times = new ArrayList<Time>();

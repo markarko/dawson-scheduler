@@ -1,7 +1,7 @@
 const collegeStartTime = "7:00:00";
 const collegeTimes = collegeStartTime.split(':');
 const collegeStartTimeInMinutes = (+collegeTimes[0] * 60 + +collegeTimes[1]);
-const colors = ["red", "green", "orange", "blue", "purple"];
+const colors = ["red", "green", "orange", "blue", "purple", "pink", "grey"];
 
 
 function generateSchedule(courses, sections){

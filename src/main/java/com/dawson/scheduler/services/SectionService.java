@@ -48,8 +48,7 @@ public class SectionService {
 	 * @param selectedCourses	-Courses that were previously selected
 	 * @return
 	 */
-	//fix error messages showing up when generating all schedules
-	//display error message only when searching
+
 	public boolean canAddSection(Section sectionToAdd, List<Section> selectedSections, Course courseToAdd, List<Course> selectedCourses) {
 		if (courseToAdd != null && selectedCourses != null && sectionToAdd != null && selectedSections != null) {	
 			if (selectedCourses.size() == 0) { return true; }

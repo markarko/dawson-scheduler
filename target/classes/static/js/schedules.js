@@ -1,15 +1,21 @@
 const collegeStartTime = "7:00:00";
 const collegeTimes = collegeStartTime.split(':');
 const collegeStartTimeInMinutes = (+collegeTimes[0] * 60 + +collegeTimes[1]);
-const colors = ["red", "green", "orange", "blue", "purple"];
+const colors = ["red", "green", "orange", "blue", "purple", "pink", "grey"];
 	
 let gridParent = document.querySelector("#grid-parent");
+let message = document.querySelector("#message");
 
 function generateAllSchedules(courses, sections){
+	message.textContent = "";
 	
-
 	if (sections !== null && courses !== null){
-		
+		if (courses.length == 0) { 
+			message.textContent = "No schedules available";
+			return;
+		} else {
+			message.textContent = courses.length > 1 ? courses.length + " schedules were generated" : "1 schedule was generated";
+		}
 		for (i in sections){		
 			createGrid();
 			let scheduleGrids = document.querySelectorAll(".schedule");
@@ -78,8 +84,9 @@ function generateAllSchedules(courses, sections){
 			submitButton.textContent = "select";
 			form.appendChild(submitButton);
 		}
+		
 	} else {
-		console.log("Sections or courses are null");
+		message.textContent = "No courses are selected";
 	}
 }
 function createGrid(){
