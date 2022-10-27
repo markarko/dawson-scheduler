@@ -19,6 +19,7 @@
 		<button th:onclick="generateAllSchedules([[${courseCombinations}]], [[${sectionCombinations}]])">generate all schedules</button>
 		<a th:href="@{search}">add course</a>
 	</div>
+	<div id="message"></div>
 	<div id="course-list">
 		<form th:action="@{/removeCourse}" th:each="course : ${courses}">
 			

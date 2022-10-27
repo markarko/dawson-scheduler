@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import com.dawson.scheduler.entities.Course;
 import com.dawson.scheduler.entities.Schedule;
 import com.dawson.scheduler.entities.Section;
+import com.dawson.scheduler.parsers.RequestParser;
 import com.dawson.scheduler.services.CourseService;
 import com.dawson.scheduler.services.SectionService;
 
@@ -46,6 +47,9 @@ public class CourseController {
 	
 	@Autowired
 	private SectionService sectionService;
+	
+	@Autowired
+	private RequestParser requestParser;
 	
 	private List<Course> selectedCourses;
 	private List<Course> validCourses;
@@ -144,13 +148,6 @@ public class CourseController {
 			model.addAttribute("courseCombinations", allPossibleSchedulesAsCourses);
 			model.addAttribute("sectionCombinations", allPossibleSchedulesAsSections);
 		}
-		/*for (List<Section> secs : allPossibleSchedulesAsSections) {
-			System.out.print("[");
-			for (Section sec : secs) {
-				System.out.print(sec.getSectionId() + ",");
-			}
-			System.out.println("]");
-		}*/
 		return "schedules";
 	}
 	
@@ -190,7 +187,9 @@ public class CourseController {
 	//test data
 	@GetMapping("/addCourses")
 	public String saveAllCourse(Model model) {
-		Time startTime1 = Time.valueOf("10:00:00");
+		requestParser.parseHtml();
+		
+		/*Time startTime1 = Time.valueOf("10:00:00");
 		Time endTime1 = Time.valueOf("11:30:00");
 		Time startTime2 = Time.valueOf("11:30:00");
 		Time endTime2 = Time.valueOf("13:00:00");
@@ -532,7 +531,7 @@ public class CourseController {
 				.sections(List.of(sec7, sec8))
 				.build();
 				
-		this.courseService.saveAll(List.of(Course.copy(course1), Course.copy(course2), Course.copy(course3), Course.copy(course4)));
+		this.courseService.saveAll(List.of(Course.copy(course1), Course.copy(course2), Course.copy(course3), Course.copy(course4)));*/
 		return "redirect:/search";
 	}	
 }

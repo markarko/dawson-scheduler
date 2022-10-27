@@ -38,4 +38,10 @@ public class CourseService {
 		}
 		return true;
 	}
+	public void deleteAll() {
+		courseRepository.deleteAll();
+	}
+	public void flush() {
+		courseRepository.flush();
+	}
 }
