@@ -1,0 +1,102 @@
+.grid{
+	height: 25rem;
+	width: 24rem;
+	display: flex;
+}
+.grid-container{
+	width: 12rem;
+	height: 19.5rem;
+}
+#grid-parent{
+	padding: 5rem;
+	display: flex;
+	flex-wrap: wrap;
+}
+#actions{
+	display: flex;
+	justify-content: center;
+}
+.schedule{
+	width: 12rem;
+	height: 19.5rem;
+	position: absolute;
+	display: grid;
+	grid-template-columns: repeat(7, 1fr);
+	grid-template-rows: repeat(31, 1fr);
+}
+.schedule-info{
+	display: flex;
+	flex-direction: column;
+	justify-content: left;
+	box-sizing: border-box;
+	padding-left: 1rem;
+}
+p{
+	margin: 0;
+	margin-bottom: 0.5rem;
+}
+#course-list{
+	display: flex;
+	justify-content: center;
+}
+#course-list form{
+	margin: 0 1rem 0 1rem;
+}
+button, a, a:visited{
+	padding: 0.5rem;
+	border: 2px solid black;
+	text-decoration: none;
+	color: black;
+	cursor: pointer;
+	background-color: white;
+	margin: 1rem;
+	width: 10rem;
+	font-weight: bold;
+	text-align: center;
+}
+.remove-course{
+	display: flex;
+	border: 2px solid black;
+	padding: 0.25rem;
+	border-radius: 1rem;
+	margin-bottom: 1rem;
+}
+.remove-course button{
+	border: medium none;
+	background: none;
+	padding: 0px;
+	color: red;
+	margin: 0px;
+	height: 2rem;
+	width: 2rem;
+	font-size: 1rem;
+	font-weight: bold;
+}
+.remove-course h6{
+	padding: 0px;
+	margin: 0px 0px 0px 0.25rem;
+	line-height: 2rem;
+	font-size: 1rem;	
+}
+body{
+	margin: 0;
+}
+td, th{
+	border: 1.5px solid black;
+	height: 0.4rem;
+	font-size: 0.4rem;
+	line-height: 0.4rem;
+	text-align: center;
+	font-weight: bold
+}
+table{
+	border-collapse: collapse;
+	table-layout: fixed;
+	width: 12rem;
+	height: 19.5rem;
+}
+
+form button{
+	width: 7rem;
+	border-radius: 1rem;
+}
