@@ -16,6 +16,10 @@
 	display: grid;
 	grid-template-columns: repeat(8, 1fr);
 	grid-template-rows: repeat(31, 1fr);
+	
+}
+#schedule div{
+	overflow: auto;
 }
 #course-list{
 	display: flex;
@@ -72,7 +76,7 @@ td, th{
 }
 table{
 	border-collapse: collapse;
-	table-layout: fixed
+	table-layout: fixed;
 }
 
 form button{
