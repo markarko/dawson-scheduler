@@ -24,7 +24,10 @@ import java.time.LocalDateTime;
 
 import java.util.List;
 import com.gargoylesoftware.htmlunit.WebResponse;
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.File;
+import java.io.FileNotFoundException;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -46,6 +49,7 @@ public class RequestParser
     public void parseHtml(){
         File file = new File("C:\\Users\\marko\\Desktop\\EclipseWorkspace\\dawson-scheduler\\src\\main\\java\\com\\dawson\\scheduler\\parsers\\response.txt");
 		BufferedReader reader = null;
+		int j = 0;
 		try {
 			// Remove all courses when doing the request
 			
@@ -63,6 +67,8 @@ public class RequestParser
 			Document doc = Jsoup.parse(html);
             Elements courseWraps = doc.select("div.course-list-table div.course-wrap");
             
+            // Bug with the course 311-912-DW : no sections, no schedules
+            
             //Courses
             for (Element courseWrap : courseWraps){
             
@@ -72,38 +78,62 @@ public class RequestParser
                 
                 Element courseTitle = infoContainer.select("div.ctitle").first();
                 Element courseNumber = infoContainer.select("div.cnumber").first();
-                Element description = null;
-                
-                
-                
-                //Sections
+                Element description = null;                
                 Elements sectionDetails = courseWrap.select("ul.section-details");
-                
-                Elements rowsTests = sectionDetails.first().select("li.row");
-                if (rowsTests.get(rowsTests.size()-1).text().contains("Intensive")) {
-                	continue;
-                }
-                		
+	
                 List<Section> sectionEntities = new ArrayList<Section>();
-                boolean canAddCourse = true;
+                if (courseNumber.text().equals("311-912-DW")) continue;
+                //Sections
                 for (Element sectionDetail : sectionDetails){
-                    Elements rows = sectionDetail.select("li.row");
-                    Element section = rows.get(0).select("div.col-md-10").first();
-                    Element teacher = rows.get(1).select("div.col-md-10").first();
-                    description = rows.get(2).select("div.col-md-10").first();
-                    Element scheduleWrapper = rows.get(4).select("div.col-md-10").first();
-                    Elements schedules = scheduleWrapper.select("table tbody tr");
+                	
+                	Elements rows = sectionDetail.select("li.row");
+                    Element scheduleDetails = rows.last().selectFirst("div.col-md-10").selectFirst("table.schedule-details");
+                    String potentialIntensive = scheduleDetails.selectFirst("tbody").select("tr").last().select("td").last().text();
+                    if (potentialIntensive.equals("Intensive")) continue;
                     
-                    //Testing data anomalies for some courses
-                    if (courseNumber.text().equals("603-102-MQ"))
-                    	System.out.println(section.text());
-                    		
+                    if (rows.get(rows.size()-1).text().contains("Intensive")) {
+                    	continue;
+                    }
+                    
+                    Element section = null;
+                    Element teacher = null;
+                    Elements schedules = null;
+                    
+                    if (rows.size() == 6) {
+                    	if (rows.get(0).selectFirst("label").text().equals("Section Title")) {
+                    		section = rows.get(1).select("div.col-md-10").first();
+                            teacher = rows.get(2).select("div.col-md-10").first();
+                            description = rows.get(3).select("div.col-md-10").first();
+                            schedules = rows.get(5).select("div.col-md-10").first().select("table tbody tr");
+                    	} else if (rows.get(3).selectFirst("label").text().equals("Comment")) {
+                    		section = rows.get(0).select("div.col-md-10").first();
+                            teacher = rows.get(1).select("div.col-md-10").first();
+                            description = rows.get(2).select("div.col-md-10").first();
+                            schedules = rows.get(5).select("div.col-md-10").first().select("table tbody tr");
+                    	} else {
+                    		System.out.println("Something went wrong");
+                    		continue;
+                    	}
+                    } else if (rows.size() == 7){
+                    	section = rows.get(1).select("div.col-md-10").first();
+                        teacher = rows.get(2).select("div.col-md-10").first();
+                        description = rows.get(3).select("div.col-md-10").first();
+                        schedules = rows.get(6).select("div.col-md-10").first().select("table tbody tr");
+                    } else {
+                    	section = rows.get(0).select("div.col-md-10").first();
+                        teacher = rows.get(1).select("div.col-md-10").first();
+                        description = rows.get(2).select("div.col-md-10").first();
+                        schedules = rows.get(4).select("div.col-md-10").first().select("table tbody tr");
+                    }
+                    
+                    
+
                     List<Schedule> scheduleEntities = new ArrayList<>();
                     for (Element schedule : schedules){
                         Elements cells = schedule.select("td");
                         Element dayOfWeek = cells.get(0);
                         Element times = cells.get(1);
-                        //System.out.println(times.text());
+
                         List<Time> parsedTimes = parseStartAndEndTimes(times.text());
                         Element location = cells.get(2);
                         Schedule scheduleEntity = Schedule.builder()
@@ -116,20 +146,20 @@ public class RequestParser
                         scheduleEntities.add(scheduleEntity);
                     }
                     try {
-                    	if (scheduleEntities.size() != 0) {
-                    		   	
-		                    Section sectionEntity = Section.builder()
-		                    		.section(Integer.parseInt(section.text()))
-		                    		.schedules(scheduleEntities)
-		                    		.teacher(teacher.text())
-		                    		.build();      
-		                    sectionEntities.add(sectionEntity);
-                    	}
+                    	Section sectionEntity = Section.builder()
+	                    		.section(Integer.parseInt(section.text()))
+	                    		.schedules(scheduleEntities)
+	                    		.teacher(teacher.text())
+	                    		.build();      
+	                    sectionEntities.add(sectionEntity);
                     } catch (NumberFormatException e) {
-                    	canAddCourse = false;
-                    	//System.out.println("Can't convert");
-                    	//System.out.print("----------"+section.text());
+                    	System.out.println("Can't convert");
                     }
+                }
+                
+                //Intensive courses that have only 1 section
+                if (description == null) {
+                	continue;
                 }
                 Course courseEntity = Course.builder()
                 		.courseDescription(description.text().length() > 255 ? description.text().substring(0, 255) : description.text())
@@ -137,10 +167,7 @@ public class RequestParser
                 		.courseTitle(courseTitle.text())
                 		.sections(sectionEntities)
                 		.build();
-                
-                //If anything goes wrong, don't add the course. Temporary solution
-                if (canAddCourse && sectionEntities.size() != 0)
-                	courseService.save(courseEntity);
+                courseService.save(courseEntity);           
             }
 		} catch (FileNotFoundException e){
 			System.out.println("File not found");
@@ -153,9 +180,12 @@ public class RequestParser
     
     //Refactor the code...
     public static List<Time> parseStartAndEndTimes(String startAndEndTime){
+    	
         String[] startAndEndTimes = startAndEndTime.split("-");
         String startTimeStr = startAndEndTimes[0];
+        //System.out.println(startAndEndTime);
         String endTimeStr = startAndEndTimes[1];
+        
         String[] startTimeAmPmSep = startTimeStr.split(" ");
         
         if (startTimeAmPmSep[1].equals("PM") && !startTimeAmPmSep[0].split(":")[0].equals("12")){

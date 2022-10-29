@@ -31,8 +31,6 @@ public class CourseService {
 	public boolean canAddCourse(Course courseToAdd, List<Course> selectedCourses) {
 		for (Course c : selectedCourses) {
 			if (c.getCourseId() == courseToAdd.getCourseId()) {
-				//errorMessage = courseSelectedError;
-				//System.out.println(courseSelectedError);
 				return false;
 			}
 		}

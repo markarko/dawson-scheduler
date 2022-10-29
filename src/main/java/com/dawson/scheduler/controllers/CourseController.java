@@ -160,7 +160,7 @@ public class CourseController {
 			if (courseService.canAddCourse(course, selectedCourses)) {
 				this.selectedCourses.add(course);	
 			} else {	
-				this.errorMessage = "The course \"" + course.getCourseNumber() + "\"	 is already selected";
+				this.errorMessage = "The course \"" + course.getCourseNumber() + "\" is already selected";
 				return "redirect:/search";
 			}
 		}
