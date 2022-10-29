@@ -5,6 +5,7 @@ const colors = ["red", "green", "orange", "blue", "purple", "pink", "grey"];
 	
 let gridParent = document.querySelector("#grid-parent");
 let message = document.querySelector("#message");
+let clicked = false;
 
 function generateAllSchedules(courses, sections){
 	message.textContent = "";
@@ -16,6 +17,8 @@ function generateAllSchedules(courses, sections){
 		} else {
 			message.textContent = courses.length > 1 ? courses.length + " schedules were generated" : "1 schedule was generated";
 		}
+		if (clicked) return;
+		clicked = true;
 		for (i in sections){		
 			createGrid();
 			let scheduleGrids = document.querySelectorAll(".schedule");

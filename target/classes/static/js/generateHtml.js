@@ -3,10 +3,13 @@ const collegeTimes = collegeStartTime.split(':');
 const collegeStartTimeInMinutes = (+collegeTimes[0] * 60 + +collegeTimes[1]);
 const colors = ["red", "green", "orange", "blue", "purple", "pink", "grey"];
 
+let clicked = false;
 
 function generateSchedule(courses, sections){
  	let grids = document.querySelectorAll(".grid");
 	if (sections !== undefined && courses !== undefined){
+		if (clicked) return;
+		clicked = true;
 		for (i in sections){
 			let schedules = sections[i].schedules;
 			let course = courses[i];
