@@ -24,6 +24,10 @@ public class SectionService {
 	@Autowired 
 	private CourseService courseService;
 	
+	//Limit the amount of schedules generated
+	private int maxSchedules = 150;
+	private int scheduleCount = 0;
+	
 	public Section findBySectionId(int sectionId) {
 		return sectionRepository.findBySectionId(sectionId);
 	}
@@ -99,7 +103,7 @@ public class SectionService {
 									 List<Course> 		 coursesLinkedToSections,
 									 List<List<Section>> allSectionCombs,
 									 List<List<Course>>  allCoursesCombs ) {
-		
+		if (scheduleCount >= maxSchedules) return;
         if (sectionComb.size() == numItemsInComb){
             List<Section> newSectionComb = new ArrayList<>();
             List<Course> newCourseComb = new ArrayList<>();
@@ -111,6 +115,7 @@ public class SectionService {
             }
             allSectionCombs.add(newSectionComb);
             allCoursesCombs.add(newCourseComb);
+            scheduleCount++;
             return;
         }
         
@@ -132,5 +137,8 @@ public class SectionService {
 	public int toMinutes(String time) {
 		String[] times = time.split(":");
 		return Integer.parseInt(times[0]) * 60 + Integer.parseInt(times[1]);
+	}
+	public void setScheduleCount(int scheduleCount) {
+		this.scheduleCount = scheduleCount;
 	}
 }

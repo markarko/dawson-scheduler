@@ -116,6 +116,7 @@ public class CourseController {
 	
 	@GetMapping("/schedules")
 	public String showSchedules(Model model) {
+		this.sectionService.setScheduleCount(0);
 		this.errorMessage = "";
 		List<ScheduleTime> times = new ArrayList<>();
 		int startTime = 7;
@@ -128,6 +129,7 @@ public class CourseController {
 		model.addAttribute("times", times);
 		model.addAttribute("courses", this.selectedCourses);
 		
+		//Calculate it on course change
 		if (this.selectedCourses.size() > 0) {
 			int numItemsInComb = this.selectedCourses.size();
 			int startIndex = 0;

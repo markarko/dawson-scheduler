@@ -47,7 +47,7 @@ public class RequestParser
 	CourseService courseService;
     
     public void parseHtml(){
-        File file = new File("C:\\Users\\marko\\Desktop\\EclipseWorkspace\\dawson-scheduler\\src\\main\\java\\com\\dawson\\scheduler\\parsers\\response.txt");
+        File file = new File("C:\\Users\\marko\\Desktop\\IntelliJ\\dawson-scheduler\\src\\main\\java\\com\\dawson\\scheduler\\parsers\\response.txt");
 		BufferedReader reader = null;
 		int j = 0;
 		try {
@@ -85,9 +85,9 @@ public class RequestParser
                 if (courseNumber.text().equals("311-912-DW")) continue;
                 //Sections
                 for (Element sectionDetail : sectionDetails){
-                	
                 	Elements rows = sectionDetail.select("li.row");
                     Element scheduleDetails = rows.last().selectFirst("div.col-md-10").selectFirst("table.schedule-details");
+                    if (scheduleDetails == null) continue;
                     String potentialIntensive = scheduleDetails.selectFirst("tbody").select("tr").last().select("td").last().text();
                     if (potentialIntensive.equals("Intensive")) continue;
                     
